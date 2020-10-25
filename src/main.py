@@ -6,7 +6,7 @@ from utils import path_relative_to
 
 data_frame = read_csv(path_relative_to(__file__, '../ref/raw_covid19_dataset.csv'))
 data_frame = clear_dataset(data_frame)
-train, test, train_labels, test_labels = train_test_sets(data_frame, 'SARS-Cov-2 exam result')
+train, test, train_labels, test_labels = train_test_sets(data_frame, 'has_covid19')
 
 print(data_frame.head())
 print()
