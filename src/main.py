@@ -1,7 +1,8 @@
 from pandas import read_csv
+from sklearn.metrics import roc_auc_score
 
 from data_cleaning import clear_dataset
-from random_forest import get_random_forest, train_test_sets
+from random_forest import avg_model_shape, features_importance, performance, random_forest, train_test_sets
 from utils import path_relative_to
 from variables import RF_CRITERION, RF_MAX_DEPTH, RF_MAX_FEATURES, RF_TREES
 
@@ -15,6 +16,22 @@ print(data_frame.shape)
 print(train.shape)
 print(test.shape)
 
-model = get_random_forest(RF_TREES, RF_CRITERION, RF_MAX_DEPTH, RF_MAX_FEATURES)
-
+model = random_forest(RF_TREES, RF_CRITERION, RF_MAX_DEPTH, RF_MAX_FEATURES)
 print(model)
+
+print('Trainning data:')
+model.fit(train, train_labels)
+
+avg_n_nodes, avg_depth = avg_model_shape(model)
+
+print(f'\tAverage number of nodes {avg_n_nodes}')
+print(f'\tAverage maximum depth {avg_depth}')
+
+performance = performance(model, [train, test])
+
+print(f'\tTrain ROC AUC Score: {roc_auc_score(train_labels, performance[0][1])}')
+print(f'\tTest ROC AUC Score: {roc_auc_score(test_labels, performance[1][1])}')
+
+print('Feature importances:')
+# Features for feature importances
+print(features_importance(model, list(train.columns)))

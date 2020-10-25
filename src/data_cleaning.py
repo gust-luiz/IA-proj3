@@ -1,5 +1,6 @@
 from variables import MISS_DATA_TO_DROP_PERC
 
+
 def clear_dataset(data_frame):
     data_frame = clear_false_NAN_data(data_frame)
 

@@ -27,3 +27,6 @@ RF_MAX_DEPTH = None
     - If 'log2', then max_features=log2(n_features).
     - If None, then max_features=n_features.'''
 RF_MAX_FEATURES = 'auto'
+
+
+RANDOM_SEED = 42
