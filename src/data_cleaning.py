@@ -2,6 +2,14 @@ from variables import MISS_DATA_TO_DROP_PERC
 
 
 def clear_dataset(data_frame):
+    '''Full cleaning process over a data frame
+
+    Args:
+    - `DataFrame:data_frame`: Data frame to be clear
+
+    Returns:
+    - `DataFrame:clean_df`
+    '''
     data_frame = clear_false_NAN_data(data_frame)
 
     data_frame = _rename_columns(data_frame)
@@ -16,6 +24,14 @@ def clear_false_NAN_data(data_frame):
 
 
 def _rename_columns(data_frame):
+    '''Renaming dataset colums to facilitate data handle
+
+    Args:
+    - `DataFrame:data_frame`: Data frame to be clear
+
+    Returns:
+    - `Dataframe:updated_data_frame`
+    '''
     return data_frame.rename(columns={
         'Patient ID': 'patient_id',
         'Patient age quantile': 'age_group',
@@ -132,12 +148,28 @@ def _rename_columns(data_frame):
 
 
 def _drop_metacolumns(data_frame):
+    '''Dropping columns with control data only aka metadata
+
+    Args:
+    - `DataFrame:data_frame`: Data frame to be clear
+
+    Returns:
+    - `Dataframe:updated_data_frame`
+    '''
     return data_frame.drop(columns=[
         'patient_id',
     ])
 
 
 def _drop_more_blank_columns(data_frame):
+    '''Dropping columns with more blank data than filled data
+
+    Args:
+    - `DataFrame:data_frame`: Data frame to be clear
+
+    Returns:
+    - `Dataframe:updated_data_frame`
+    '''
     to_drop = []
     cnt_row, _ = data_frame.shape
 

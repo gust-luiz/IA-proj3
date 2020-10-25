@@ -11,6 +11,15 @@ from variables import RANDOM_SEED, TEST_SET_PERC
 
 
 def train_test_sets(data_frame, result_label):
+    '''Spliting a whole dataset into trainning and testing dataset
+
+    Args:
+    - `DataFrame:data_frame`: Original dataset
+    - `str:result_label`: Column to be consider as goal
+
+    Returns:
+    - Four elements list as follow: trainning set, testing set, trainning labels and testing labels
+    '''
     result_label = array(data_frame.pop(result_label))
 
     return train_test_split(
@@ -22,6 +31,18 @@ def train_test_sets(data_frame, result_label):
 
 
 def random_forest(trees=100, criterion='gini', max_depth=None, max_features='auto'):
+    '''Initializing a Random Forest based on spefic controls
+
+    Args:
+    - `int:trees`: The number of trees in the forest.
+    - `str:criterion`: The function to measure the quality of a split.
+    - `int:max_depth`: The maximum depth of the tree or None.
+    - `object:max_features`: The number of features to consider when looking for the best split,
+        it could be an `int`, a `float`, a `str` or None
+
+    Returns:
+    - `RandomForestClassifier`
+    '''
     return RandomForestClassifier(
         n_estimators=trees,
         criterion=criterion,
@@ -31,44 +52,70 @@ def random_forest(trees=100, criterion='gini', max_depth=None, max_features='aut
     )
 
 
-def avg_model_shape(model):
+def avg_model_shape(random_forest):
+    '''Getting average #nodes and maximum depth from a random forest
+
+    Args:
+    - `RandomForestClassifier:random_forest`: RandomForest
+
+    Returns:
+    - `list:avg_shape` with #node and maximum depth
+    '''
     n_nodes = []
     max_depths = []
 
-    for ind_tree in model.estimators_:
+    for ind_tree in random_forest.estimators_:
         n_nodes.append(ind_tree.tree_.node_count)
         max_depths.append(ind_tree.tree_.max_depth)
 
     return [int(mean(v)) for v in [n_nodes, max_depths]]
 
 
-def performance(model, datasets=[]):
+def performance(random_forest, datasets=[]):
+    '''Evaluating Random Forest performance over datasets
+
+    Args:
+    - `RandomForestClassifier:random_forest`: Trained Random Forest
+    - `list:datasets`: Dataset to check
+
+    Returns:
+    - `list:performance` with prediction and probability per dataset
+    '''
     performance = []
 
     for dataset in datasets:
         performance.append((
-            model.predict(dataset),
-            model.predict_proba(dataset)[:, 1]
+            random_forest.predict(dataset),
+            random_forest.predict_proba(dataset)[:, 1]
         ))
 
     return performance
 
 
-def features_importance(model, features, top_n=10):
-    fi_model = DataFrame({
+def features_importance(random_forest, features, top_n=10):
+    '''Listing the most important features on a Random Forest
+
+    Args:
+    - `RandomForestClassifier:random_forest`: Trained Random Forest
+    - `list:features`: Features to consider on the list
+    - `int:top_n`: List size
+
+    Returns:
+    - `DataFrame:fi_random_forest`
+    '''
+    return DataFrame({
         'feature': features,
-        'importance': model.feature_importances_
+        'importance': random_forest.feature_importances_
     }).sort_values(
         'importance', ascending = False
-    )
-
-    return fi_model.head(top_n)
+    ).head(top_n)
 
 
-# https://towardsdatascience.com/an-implementation-and-explanation-of-the-random-forest-in-python-77bf308a9b76
 def evaluate(test_info, train_info):
-    """Compare machine learning model to baseline performance.
-    Computes statistics and shows ROC curve."""
+    '''Compare machine learning model to baseline performance.
+
+    Source: https://github.com/WillKoehrsen/Machine-Learning-Projects/blob/master/Random%20Forest%20Tutorial.ipynb
+    '''
     baseline = {
         'recall': recall_score(test_info['labels'], [1 for _ in range(len(test_info['labels']))]),
         'precision': precision_score(test_info['labels'], [1 for _ in range(len(test_info['labels']))]),
@@ -101,8 +148,10 @@ def evaluate(test_info, train_info):
     return base_false_pos, base_true_pos, model_false_pos, model_true_pos
 
 
-# https://towardsdatascience.com/an-implementation-and-explanation-of-the-random-forest-in-python-77bf308a9b76
 def plot_roc_curves(base_false_pos, base_true_pos, model_false_pos, model_true_pos):
+    ''''Shows ROC curve.
+    Source: https://github.com/WillKoehrsen/Machine-Learning-Projects/blob/master/Random%20Forest%20Tutorial.ipynb
+    '''
     pyplot.figure(figsize = (8, 6))
     pyplot.rcParams['font.size'] = 16
 
@@ -115,13 +164,12 @@ def plot_roc_curves(base_false_pos, base_true_pos, model_false_pos, model_true_p
     pyplot.title('ROC Curves')
 
 
-# https://towardsdatascience.com/an-implementation-and-explanation-of-the-random-forest-in-python-77bf308a9b76
 def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=pyplot.cm.Oranges):
-    """
-    This function prints and plots the confusion matrix.
+    '''This function prints and plots the confusion matrix.
     Normalization can be applied by setting `normalize=True`.
     Source: http://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
-    """
+    Source: http://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
+    '''
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         print("Normalized confusion matrix")
