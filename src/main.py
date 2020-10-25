@@ -1,8 +1,9 @@
 from pandas import read_csv
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import confusion_matrix, roc_auc_score
 
 from data_cleaning import clear_dataset
-from random_forest import avg_model_shape, features_importance, performance, random_forest, train_test_sets
+from random_forest import (avg_model_shape, evaluate, features_importance, performance, plot_confusion_matrix,
+                           plot_roc_curves, random_forest, train_test_sets)
 from utils import path_relative_to
 from variables import RF_CRITERION, RF_MAX_DEPTH, RF_MAX_FEATURES, RF_TREES
 
@@ -35,3 +36,25 @@ print(f'\tTest ROC AUC Score: {roc_auc_score(test_labels, performance[1][1])}')
 print('Feature importances:')
 # Features for feature importances
 print(features_importance(model, list(train.columns)))
+
+print('Model Evaluation')
+evaluation = evaluate(
+    {
+        'labels': test_labels,
+        'predictions': performance[1][0],
+        'probs': performance[1][1]
+    },
+    {
+        'labels': train_labels,
+        'predictions': performance[0][0],
+        'probs': performance[0][1]
+    },
+)
+
+plot_roc_curves(evaluation)
+
+plot_confusion_matrix(
+    confusion_matrix(test_labels, performance[1][0]),
+    classes = ['Poor Health', 'Good Health'],
+    title = 'Health Confusion Matrix'
+)
