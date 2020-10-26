@@ -14,13 +14,15 @@ def clear_dataset(data_frame):
     - `DataFrame:clean_df`
     '''
 
+    data_frame = _rename_columns(data_frame)
     data_frame = replace_humanized_values(data_frame)
     data_frame = categorical_to_number(data_frame)
-    data_frame = fill_NAN_fields(data_frame)
+    data_frame = fill_NAN_fields_zero(data_frame)
+    #data_frame = fill_NAN_fields_mean(data_frame)
+    #data_frame = fill_NAN_fields_group_mean(data_frame)  #overfitting
 
     data_frame = clear_false_NAN_data(data_frame)
 
-    data_frame = _rename_columns(data_frame)
     data_frame = _drop_metacolumns(data_frame)
     data_frame = _drop_more_blank_columns(data_frame)
 
@@ -42,10 +44,10 @@ def replace_humanized_values(data_frame):
 
 def categorical_to_number(data_frame):
     # Get dataframe without dtype object, except column "Patient ID"
-    data_not_object = concat([data_frame["Patient ID"], data_frame[data_frame.dtypes[data_frame.dtypes != "object"].index]], axis=1)
+    data_not_object = concat([data_frame['patient_id'], data_frame[data_frame.dtypes[data_frame.dtypes != "object"].index]], axis=1)
 
     # Get dataframe with dummies
-    data_dummies = get_dummies(data_frame[data_frame.dtypes[data_frame.dtypes == "object"].drop("Patient ID").index])
+    data_dummies = get_dummies(data_frame[data_frame.dtypes[data_frame.dtypes == "object"].drop('patient_id').index])
 
     # Concatenate dataframe with dummies
     data_frame = concat([data_not_object, data_dummies], axis=1)
@@ -53,8 +55,25 @@ def categorical_to_number(data_frame):
     return data_frame
 
 
-def fill_NAN_fields(data_frame):
+def fill_NAN_fields_zero(data_frame):
+    return data_frame.fillna(0)
+
+
+def fill_NAN_fields_mean(data_frame):
     return data_frame.fillna(data_frame.mean())
+
+
+def fill_NAN_fields_group_mean(data_frame):
+    columns_with_nan = data_frame.columns[data_frame.isna().any()].tolist()
+
+    # Fill nan with mean of the respective group according to value of "has_covid19" column
+    for c in columns_with_nan:
+        data_frame[c] = data_frame.groupby('has_covid19')[c].transform(lambda x: x.fillna(x.mean()))
+
+    # If still have nan values, fill with 0
+    data_frame = data_frame.fillna(0)
+
+    return data_frame
 
 
 def clear_false_NAN_data(data_frame):
