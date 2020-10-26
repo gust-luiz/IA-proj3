@@ -25,7 +25,14 @@ def train_test_sets(data_frame, result_label):
     if result_label == 'has_covid19':
         data_frame = data_frame.drop([
             'Proteina C reativa mg/dL'
-        ], axis=1)
+        ], axis=1, errors='ignore')
+
+    # Dropping non laboratorial variables
+    data_frame = data_frame.drop([
+            'Patient addmited to regular ward (1=yes, 0=no)',
+            'Patient addmited to semi-intensive unit (1=yes, 0=no)',
+            'Patient addmited to intensive care unit (1=yes, 0=no)'
+        ], axis=1, errors='ignore')
 
     result_label = data_frame.pop(result_label)
 
@@ -56,6 +63,7 @@ def random_forest(trees=100, criterion='gini', max_depth=None, max_features='aut
         max_depth=max_depth,
         max_features=max_features,
         n_jobs=-1,
+        bootstrap=True
     )
 
 
@@ -169,6 +177,7 @@ def plot_roc_curves(base_false_pos, base_true_pos, model_false_pos, model_true_p
     pyplot.xlabel('False Positive Rate')
     pyplot.ylabel('True Positive Rate')
     pyplot.title('ROC Curves')
+    plt.show()
 
 
 def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=pyplot.cm.Oranges):

@@ -51,7 +51,7 @@ evaluation = evaluate(
     },
 )
 
-plot_roc_curves(evaluation)
+#plot_roc_curves(evaluation)
 
 plot_confusion_matrix(
     confusion_matrix(test_labels, performance[1][0]),
