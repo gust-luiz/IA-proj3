@@ -1,5 +1,8 @@
 from variables import MISS_DATA_TO_DROP_PERC
 
+import numpy as np
+from pandas import concat, get_dummies
+
 
 def clear_dataset(data_frame):
     '''Full cleaning process over a data frame
@@ -10,6 +13,11 @@ def clear_dataset(data_frame):
     Returns:
     - `DataFrame:clean_df`
     '''
+
+    data_frame = replace_humanized_values(data_frame)
+    data_frame = categorical_to_number(data_frame)
+    data_frame = fill_NAN_fields(data_frame)
+
     data_frame = clear_false_NAN_data(data_frame)
 
     data_frame = _rename_columns(data_frame)
@@ -17,6 +25,36 @@ def clear_dataset(data_frame):
     data_frame = _drop_more_blank_columns(data_frame)
 
     return data_frame
+
+
+def replace_humanized_values(data_frame):
+    # Replacing humanized values with 0, 1 and nan
+    data_frame = data_frame.replace(['positive', 'detected', 'present', 'negative', 'not_detected', 'normal', 'absent', 'Ausentes', 'not_done',  'Não Realizado'],
+                    [1,1,1,0,0,0,0,0,np.nan,np.nan])
+
+    # Replacing inequalities with number and defining columns datatype to float where it concerns
+    data_frame['Urine - Leukocytes'].replace('<1000', '999', inplace=True)
+    data_frame['Urine - Leukocytes'] = data_frame['Urine - Leukocytes'].astype("float64")
+    data_frame['Urine - pH'] = data_frame['Urine - pH'].astype("float64")
+
+    return data_frame
+
+
+def categorical_to_number(data_frame):
+    # Get dataframe without dtype object, except column "Patient ID"
+    data_not_object = concat([data_frame["Patient ID"], data_frame[data_frame.dtypes[data_frame.dtypes != "object"].index]], axis=1)
+
+    # Get dataframe with dummies
+    data_dummies = get_dummies(data_frame[data_frame.dtypes[data_frame.dtypes == "object"].drop("Patient ID").index])
+
+    # Concatenate dataframe with dummies
+    data_frame = concat([data_not_object, data_dummies], axis=1)
+
+    return data_frame
+
+
+def fill_NAN_fields(data_frame):
+    return data_frame.fillna(0)
 
 
 def clear_false_NAN_data(data_frame):
@@ -178,3 +216,22 @@ def _drop_more_blank_columns(data_frame):
             to_drop.append(column)
 
     return data_frame.drop(columns=to_drop)
+
+
+# Function to visualize columns dtype object for posterior data cleaning
+def analyze_object_columns(data_frame):
+    object_columns = []
+
+    # Get columns with dtype object
+    for c in data_frame.columns:
+        column_dtype = data_frame[c].dtype
+        if column_dtype == 'object' and c != 'Patient ID':
+            object_columns.append(c)
+    print(object_columns)
+    print()
+
+    # Show unique values in object columns to analyze
+    for oc in object_columns:
+        print('Object Column: ', oc)
+        print(data_frame[oc].unique())
+        print()
