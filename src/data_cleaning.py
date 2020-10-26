@@ -54,7 +54,7 @@ def categorical_to_number(data_frame):
 
 
 def fill_NAN_fields(data_frame):
-    return data_frame.fillna(0)
+    return data_frame.fillna(data_frame.mean())
 
 
 def clear_false_NAN_data(data_frame):
