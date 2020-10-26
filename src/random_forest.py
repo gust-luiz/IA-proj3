@@ -20,7 +20,14 @@ def train_test_sets(data_frame, result_label):
     Returns:
     - Four elements list as follow: trainning set, testing set, trainning labels and testing labels
     '''
-    result_label = array(data_frame.pop(result_label))
+
+    # Dropping 'Proteina C reativa mg/dL' if target is "has_covid19" column
+    if result_label == 'has_covid19':
+        data_frame = data_frame.drop([
+            'Proteina C reativa mg/dL'
+        ], axis=1)
+
+    result_label = data_frame.pop(result_label)
 
     return train_test_split(
         data_frame, result_label,
