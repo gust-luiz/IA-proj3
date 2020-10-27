@@ -1,15 +1,15 @@
 '''Should be between 0.0 and 1.0 and represent the proportion of NaN by columns
     on the dataset to it be dropped.'''
-MISS_DATA_TO_DROP_PERC = .85
+MISS_DATA_TO_DROP_PERC = .90
 
 
 '''If float, should be between 0.0 and 1.0 and represent the proportion of the dataset
     to include in the test split. If int, represents the absolute number of test samples.'''
-TEST_SET_PERC = 1/3
+TEST_SET_PERC = .3
 
 
 '''The number of trees in the forest.'''
-RF_TREES = 100
+RF_TREES = 200
 
 '''The function to measure the quality of a split. Supported criteria are 'gini'
     for the Gini impurity and 'entropy' for the information gain.'''
@@ -17,7 +17,7 @@ RF_CRITERION = 'gini'
 
 '''The maximum depth of the tree. If None, then nodes are expanded until all leaves
     are pure or until all leaves contain less than min_samples_split samples.'''
-RF_MAX_DEPTH = None
+RF_MAX_DEPTH = 11 #None
 
 '''The number of features to consider when looking for the best split:
     - If int, then consider max_features features at each split.

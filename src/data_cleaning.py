@@ -17,7 +17,7 @@ def clear_dataset(data_frame):
     data_frame = _rename_columns(data_frame)
     data_frame = replace_humanized_values(data_frame)
     data_frame = categorical_to_number(data_frame)
-    data_frame = fill_NAN_fields_zero(data_frame)
+    #data_frame = fill_NAN_fields_zero(data_frame)
     #data_frame = fill_NAN_fields_mean(data_frame)
     #data_frame = fill_NAN_fields_group_mean(data_frame)  #overfitting
 
@@ -55,25 +55,12 @@ def categorical_to_number(data_frame):
     return data_frame
 
 
-def fill_NAN_fields_zero(data_frame):
-    return data_frame.fillna(0)
+def fill_NAN_fields_zero(train_set, test_set):
+    return train_set.fillna(0), test_set.fillna(0)
 
 
-def fill_NAN_fields_mean(data_frame):
-    return data_frame.fillna(data_frame.mean())
-
-
-def fill_NAN_fields_group_mean(data_frame):
-    columns_with_nan = data_frame.columns[data_frame.isna().any()].tolist()
-
-    # Fill nan with mean of the respective group according to value of "has_covid19" column
-    for c in columns_with_nan:
-        data_frame[c] = data_frame.groupby('has_covid19')[c].transform(lambda x: x.fillna(x.mean()))
-
-    # If still have nan values, fill with 0
-    data_frame = data_frame.fillna(0)
-
-    return data_frame
+def fill_NAN_fields_mean(train_set, test_set):
+    return train_set.fillna(train_set.mean()), test_set.fillna(test_set.mean())
 
 
 def clear_false_NAN_data(data_frame):

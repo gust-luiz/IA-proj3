@@ -1,7 +1,7 @@
 from pandas import read_csv
-from sklearn.metrics import confusion_matrix, roc_auc_score
+from sklearn.metrics import confusion_matrix, roc_auc_score, accuracy_score
 
-from data_cleaning import clear_dataset
+from data_cleaning import clear_dataset, fill_NAN_fields_zero, fill_NAN_fields_mean
 from random_forest import (avg_model_shape, evaluate, features_importance, performance, plot_confusion_matrix,
                            plot_roc_curves, random_forest, train_test_sets)
 from utils import path_relative_to
@@ -11,16 +11,20 @@ data_frame = read_csv(path_relative_to(__file__, '../ref/raw_covid19_dataset.csv
 data_frame = clear_dataset(data_frame)
 train, test, train_labels, test_labels = train_test_sets(data_frame, 'has_covid19')
 
+train, test = fill_NAN_fields_zero(train, test)
+#train, test = fill_NAN_fields_mean(train, test)
+
 print(data_frame.head())
 print()
 print(data_frame.shape)
 print(train.shape)
 print(test.shape)
+print()
 
 model = random_forest(RF_TREES, RF_CRITERION, RF_MAX_DEPTH, RF_MAX_FEATURES)
 print(model)
 
-print('Trainning data:')
+print('\nTrainning data:')
 model.fit(train, train_labels)
 
 avg_n_nodes, avg_depth = avg_model_shape(model)
@@ -33,11 +37,11 @@ performance = performance(model, [train, test])
 print(f'\tTrain ROC AUC Score: {roc_auc_score(train_labels, performance[0][1])}')
 print(f'\tTest ROC AUC Score: {roc_auc_score(test_labels, performance[1][1])}')
 
-print('Feature importances:')
+print('\nFeature importances:')
 # Features for feature importances
 print(features_importance(model, list(train.columns)))
 
-print('Model Evaluation')
+print('\nModel Evaluation')
 evaluation = evaluate(
     {
         'labels': test_labels,
@@ -58,3 +62,6 @@ plot_confusion_matrix(
     classes = ['Poor Health', 'Good Health'],
     title = 'Health Confusion Matrix'
 )
+
+accuracy = accuracy_score(test_labels, performance[1][0])
+print(f'\nMean accuracy score: {accuracy:.3}')
