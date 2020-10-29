@@ -29,6 +29,7 @@ def train_test_sets(data_frame, result_label):
 
     # Dropping non laboratorial variables
     data_frame = data_frame.drop([
+            'age_group',
             'Patient addmited to regular ward (1=yes, 0=no)',
             'Patient addmited to semi-intensive unit (1=yes, 0=no)',
             'Patient addmited to intensive care unit (1=yes, 0=no)'
