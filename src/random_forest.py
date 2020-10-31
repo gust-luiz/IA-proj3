@@ -4,7 +4,7 @@ import matplotlib.pyplot as pyplot
 from numpy import arange, mean
 from pandas import DataFrame
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import precision_score, recall_score, roc_auc_score, roc_curve
+from sklearn.metrics import precision_score, recall_score, f1_score, roc_auc_score, roc_curve
 from sklearn.model_selection import train_test_split
 
 from variables import RANDOM_SEED, TEST_SET_PERC
@@ -30,6 +30,7 @@ def train_test_sets(data_frame, result_label):
     # Dropping non laboratorial variables
     data_frame = data_frame.drop(
         [
+            'age_group',
             'Patient addmited to regular ward (1=yes, 0=no)',
             'Patient addmited to semi-intensive unit (1=yes, 0=no)',
             'Patient addmited to intensive care unit (1=yes, 0=no)'
@@ -137,22 +138,25 @@ def evaluate(test_info, train_info):
     baseline = {
         'recall': recall_score(test_info['labels'], [1 for _ in range(len(test_info['labels']))]),
         'precision': precision_score(test_info['labels'], [1 for _ in range(len(test_info['labels']))]),
+        'f1-score': f1_score(test_info['labels'], [1 for _ in range(len(test_info['labels']))]),
         'roc': .5,
     }
 
     results = {
         'recall': recall_score(test_info['labels'], test_info['predictions']),
         'precision': precision_score(test_info['labels'], test_info['predictions']),
+        'f1-score': f1_score(test_info['labels'], test_info['predictions']),
         'roc': roc_auc_score(test_info['labels'], test_info['probs']),
     }
 
     train_results = {
         'recall': recall_score(train_info['labels'], train_info['predictions']),
         'precision': precision_score(train_info['labels'], train_info['predictions']),
+        'f1-score': f1_score(train_info['labels'], train_info['predictions']),
         'roc': roc_auc_score(train_info['labels'], train_info['probs']),
     }
 
-    for metric in ['recall', 'precision', 'roc']:
+    for metric in ['recall', 'precision', 'f1-score', 'roc']:
         print(f'''{metric.capitalize()}
             Baseline: {round(baseline[metric], 2)}
             Test: {round(results[metric], 2)}
