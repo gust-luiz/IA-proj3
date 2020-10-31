@@ -1,7 +1,7 @@
 from itertools import product
 
 import matplotlib.pyplot as pyplot
-from numpy import arange, array, mean
+from numpy import arange, mean
 from pandas import DataFrame
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import precision_score, recall_score, roc_auc_score, roc_curve
@@ -28,11 +28,14 @@ def train_test_sets(data_frame, result_label):
         ], axis=1, errors='ignore')
 
     # Dropping non laboratorial variables
-    data_frame = data_frame.drop([
+    data_frame = data_frame.drop(
+        [
             'Patient addmited to regular ward (1=yes, 0=no)',
             'Patient addmited to semi-intensive unit (1=yes, 0=no)',
             'Patient addmited to intensive care unit (1=yes, 0=no)'
-        ], axis=1, errors='ignore')
+        ],
+        axis=1, errors='ignore'
+    )
 
     result_label = data_frame.pop(result_label)
 

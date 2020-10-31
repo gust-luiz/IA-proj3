@@ -1,4 +1,5 @@
 from os.path import dirname, realpath, sep
+from re import sub
 
 
 def path_relative_to(known_path, relative_path):
@@ -20,3 +21,25 @@ def path_relative_to(known_path, relative_path):
         known_path.pop()
 
     return sep.join(known_path + relative_path)
+
+
+def to_snake_case(string):
+    '''Converting a string to snake case by:
+
+    - Removing '(explanation/description)'
+    - Removing non-alphanumeric chars
+    - Replacing multiples spaces to just one
+
+    Source: https://www.kaggle.com/julianosilva23/covid-19-cases-random-forest-1-task#Used-Libs
+
+    Args:
+    - `srt:string`: String to convert
+
+    Returns:
+    - Converted string
+    '''
+    string = sub('\(.*\)', '', string)
+    string = sub('[^a-z A-z 0-9]', '', string)
+    string = sub(' +', ' ', string)
+
+    return string.strip().replace(' ', '_').lower() #apply snake_case pattern
