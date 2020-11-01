@@ -82,7 +82,7 @@ def plot_roc_curves(base_false_pos, base_true_pos, model_false_pos, model_true_p
     pyplot.show()
 
 
-def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=pyplot.cm.Oranges):
+def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=pyplot.cm.Blues):
     '''This function prints and plots the confusion matrix.
     Normalization can be applied by setting `normalize=True`.
     Source: http://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html

@@ -22,7 +22,7 @@ def train_test_sets(data_frame, result_label='', result_column=None):
     - Four elements list as follow: trainning set, testing set, trainning labels and testing labels
     '''
     # Dropping 'Proteina C reativa mg/dL' if target is "has_covid_19" column
-    if not result_column:
+    if result_column is None:
         if result_label == 'has_covid_19':
             data_frame = data_frame.drop([
                 'proteina_c_reativa_mgdl'

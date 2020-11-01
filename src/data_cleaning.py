@@ -24,8 +24,6 @@ def clear_dataset(data_frame):
     data_frame = _drop_metacolumns(data_frame)
     data_frame = _drop_more_blank_columns(data_frame)
 
-    data_frame = _drop_more_blank_lines(data_frame)
-
     return data_frame
 
 
@@ -234,7 +232,7 @@ def _drop_more_blank_columns(data_frame):
     return data_frame.drop(columns=to_drop)
 
 
-def _drop_more_blank_lines(data_frame):
+def drop_negative_excess_covid(data_frame):
     min_positive_filled = data_frame.loc[data_frame['has_covid_19'] == 1].count(axis='columns').min()
 
     negative_filled = data_frame.loc[data_frame['has_covid_19'] == 0].count(axis='columns')
