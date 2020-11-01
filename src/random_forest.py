@@ -3,9 +3,11 @@ from numpy import arange, linspace, mean
 from pandas import DataFrame, Series
 from pandas.core.reshape.concat import concat
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import f1_score, precision_score, recall_score, roc_auc_score, roc_curve
+from sklearn.metrics import (accuracy_score, confusion_matrix, f1_score, precision_score, recall_score, roc_auc_score,
+                             roc_curve)
 from sklearn.model_selection import RandomizedSearchCV, train_test_split
 
+from utils import plot_confusion_matrix, plot_roc_curves
 from variables import RANDOM_SEED, TEST_SET_PERC
 
 
@@ -75,7 +77,7 @@ def random_forest(trees=100, criterion='gini', max_depth=None, max_features='aut
     )
 
 
-def best_model(train_set, train_labels):
+def best_random_forest():
     # Hyperparameter grid
     param_grid = {
         'n_estimators': linspace(10, 200).astype(int),
@@ -87,18 +89,14 @@ def best_model(train_set, train_labels):
     }
 
     # Estimator for use in random search
-    estimator = RandomForestClassifier(random_state = RANDOM_SEED)
+    estimator = RandomForestClassifier()
 
     # Create the random search model
-    rs = RandomizedSearchCV(
-        estimator, param_grid, n_jobs = -1,
+    return RandomizedSearchCV(
+        estimator, param_grid,
         scoring = 'roc_auc', cv = 3,
-        n_iter = 10, verbose = 1, random_state=RANDOM_SEED
+        n_iter = 20, n_jobs = -1
     )
-
-    rs.fit(train_set, train_labels)
-
-    return rs
 
 
 def avg_model_shape(random_forest):
@@ -160,7 +158,7 @@ def features_importance(random_forest, features, top_n=10):
     ).head(top_n)
 
 
-def evaluate(test_info, train_info):
+def evaluate(test_info, train_info, print_tab=0):
     '''Compare machine learning model to baseline performance.
 
     Source: https://github.com/WillKoehrsen/Machine-Learning-Projects/blob/master/Random%20Forest%20Tutorial.ipynb
@@ -187,14 +185,59 @@ def evaluate(test_info, train_info):
     }
 
     for metric in ['recall', 'precision', 'f1-score', 'roc']:
-        print(f'''{metric.capitalize()}
-            Baseline: {round(baseline[metric], 2)}
-            Test: {round(results[metric], 2)}
-            Train: {round(train_results[metric], 2)}
-        ''')
+        print(print_tab * '\t', f'{metric.capitalize()}')
+        print((print_tab + 1) * '\t', f'Baseline: {round(baseline[metric], 2)}')
+        print((print_tab + 1) * '\t', f'Test: {round(results[metric], 2)}')
+        print((print_tab + 1) * '\t', f'Train: {round(train_results[metric], 2)}')
 
     # Calculate false positive rates and true positive rates
     base_false_pos, base_true_pos, _ = roc_curve(test_info['labels'], [1 for _ in range(len(test_info['labels']))])
     model_false_pos, model_true_pos, _ = roc_curve(test_info['labels'], test_info['probs'])
 
     return base_false_pos, base_true_pos, model_false_pos, model_true_pos
+
+
+def stats_report(model, train, test, train_labels, test_labels, print_tab=0):
+    print('*' * 50)
+    avg_n_nodes, avg_depth = avg_model_shape(model)
+
+    print('Forest Dimension:')
+    print(f'\tAverage number of nodes {avg_n_nodes}')
+    print(f'\tAverage maximum depth {avg_depth}')
+
+    performance = performance_comparison(model, [train, test])
+
+    print('\nPerformance Comparison:')
+    print(f'\tTrain ROC AUC Score: {roc_auc_score(train_labels, performance[0][1]):.5}')
+    print(f'\tTest ROC AUC Score: {roc_auc_score(test_labels, performance[1][1]):.5}')
+
+    print('\nFeature importances:')
+    print(features_importance(model, list(train.columns)))
+
+    print('\nModel Evaluation')
+    evaluation = evaluate(
+        {
+            'labels': test_labels,
+            'predictions': performance[1][0],
+            'probs': performance[1][1]
+        },
+        {
+            'labels': train_labels,
+            'predictions': performance[0][0],
+            'probs': performance[0][1]
+        },
+        print_tab=print_tab + 1
+    )
+    plot_roc_curves(*evaluation)
+
+    cm = confusion_matrix(test_labels, performance[1][0])
+    plot_confusion_matrix(
+        cm,
+        classes = ['Poor Health', 'Good Health'],
+        title = 'Health Confusion Matrix'
+    )
+
+    print(f'\nMean accuracy score:')
+    print(f'{accuracy_score(test_labels, performance[1][0]):.3}')
+
+    print('*' * 50)

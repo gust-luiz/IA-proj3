@@ -242,8 +242,8 @@ def _drop_more_blank_lines(data_frame):
 
     data_frame = data_frame.drop(index=negative_filled.loc[negative_filled.values == False].index)
 
-    print(data_frame['has_covid_19'].value_counts())
-    input()
+    # print(data_frame['has_covid_19'].value_counts())
+    # input()
 
     return data_frame
 

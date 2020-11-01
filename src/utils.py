@@ -90,9 +90,9 @@ def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix'
     '''
     if normalize:
         cm = cm.astype('float') / cm.sum(axis='columns')[:, newaxis]
-        print("Normalized confusion matrix")
+        print('Normalized confusion matrix:')
     else:
-        print('Confusion matrix, without normalization')
+        print('Confusion matrix, without normalization:')
 
     print(cm)
 

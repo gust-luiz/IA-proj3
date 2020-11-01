@@ -1,10 +1,8 @@
 from pandas import read_csv
-from sklearn.metrics import accuracy_score, confusion_matrix, roc_auc_score
 
-from data_cleaning import clear_dataset, fill_NAN_fields_mean, fill_NAN_fields_zero
-from random_forest import (avg_model_shape, best_model, evaluate, features_importance, performance_comparison,
-                           random_forest, train_test_sets)
-from utils import path_relative_to, plot_confusion_matrix, plot_roc_curves, remove_non_laboratorial
+from data_cleaning import clear_dataset, fill_NAN_fields_zero
+from random_forest import best_random_forest, random_forest, stats_report, train_test_sets
+from utils import path_relative_to, remove_non_laboratorial
 from variables import RF_CRITERION, RF_MAX_DEPTH, RF_MAX_FEATURES, RF_TREES
 
 # All available data minimally cleaned
@@ -21,77 +19,25 @@ what_analyse = [
 
 for label, dataset in what_analyse:
     train, test, train_labels, test_labels = train_test_sets(data_frame, result_label=label, result_column=dataset)
-
     train, test = fill_NAN_fields_zero(train), fill_NAN_fields_zero(test)
 
+    print('Parameterized RandomForest')
     model = random_forest(RF_TREES, RF_CRITERION, RF_MAX_DEPTH, RF_MAX_FEATURES)
-    print(model)
+    print('\tModel Configuration:')
+    print('\t', model)
 
-    print('\nTrainning data:')
     model.fit(train, train_labels)
 
-    avg_n_nodes, avg_depth = avg_model_shape(model)
+    stats_report(model, train, test, train_labels, test_labels, 1)
 
-    print(f'\tAverage number of nodes {avg_n_nodes}')
-    print(f'\tAverage maximum depth {avg_depth}')
+    print('\n' * 2)
 
-    performance = performance_comparison(model, [train, test])
+    print('Automatically searched Best Model')
+    model = best_random_forest()
+    model.fit(train, train_labels)
 
-    print(f'\tTrain ROC AUC Score: {roc_auc_score(train_labels, performance[0][1])}')
-    print(f'\tTest ROC AUC Score: {roc_auc_score(test_labels, performance[1][1])}')
+    print('\tBest params:')
+    print('\t\t', model.best_params_)
+    model = model.best_estimator_
 
-    print('\nFeature importances:')
-    # Features for feature importances
-    print(features_importance(model, list(train.columns)))
-
-    print('\nModel Evaluation')
-    evaluation = evaluate(
-        {
-            'labels': test_labels,
-            'predictions': performance[1][0],
-            'probs': performance[1][1]
-        },
-        {
-            'labels': train_labels,
-            'predictions': performance[0][0],
-            'probs': performance[0][1]
-        },
-    )
-
-    plot_roc_curves(*evaluation)
-
-    plot_confusion_matrix(
-        confusion_matrix(test_labels, performance[1][0]),
-        classes = ['Poor Health', 'Good Health'],
-        title = 'Health Confusion Matrix'
-    )
-
-    accuracy = accuracy_score(test_labels, performance[1][0])
-    print(f'\nMean accuracy score: {accuracy:.3}')
-
-    print('\nBest Model')
-    bm = best_model(train, train_labels)
-    print('params', bm.best_params_)
-    model = bm.best_estimator_
-
-    performance = performance_comparison(model, [train, test])
-
-    print(f'\tTrain ROC AUC Score: {roc_auc_score(train_labels, performance[0][1])}')
-    print(f'\tTest ROC AUC Score: {roc_auc_score(test_labels, performance[1][1])}')
-
-    print('\nModel Evaluation')
-    evaluation = evaluate(
-        {
-            'labels': test_labels,
-            'predictions': performance[1][0],
-            'probs': performance[1][1]
-        },
-        {
-            'labels': train_labels,
-            'predictions': performance[0][0],
-            'probs': performance[0][1]
-        },
-    )
-
-    plot_roc_curves(*evaluation)
-
+    stats_report(model, train, test, train_labels, test_labels, 1)
