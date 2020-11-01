@@ -1,13 +1,10 @@
-
-
-
 from matplotlib.pyplot import axis
-from numpy import mean
+from numpy import arange, linspace, mean
 from pandas import DataFrame, Series
 from pandas.core.reshape.concat import concat
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score, precision_score, recall_score, roc_auc_score, roc_curve
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import RandomizedSearchCV, train_test_split
 
 from variables import RANDOM_SEED, TEST_SET_PERC
 
@@ -54,6 +51,7 @@ def train_test_sets(data_frame, result_label='', result_column=None):
 
     return train, test, train_labels, test_labels
 
+
 def random_forest(trees=100, criterion='gini', max_depth=None, max_features='auto'):
     '''Initializing a Random Forest based on spefic controls
 
@@ -75,6 +73,32 @@ def random_forest(trees=100, criterion='gini', max_depth=None, max_features='aut
         n_jobs=-1,
         bootstrap=True
     )
+
+
+def best_model(train_set, train_labels):
+    # Hyperparameter grid
+    param_grid = {
+        'n_estimators': linspace(10, 200).astype(int),
+        'max_depth': [None] + list(linspace(3, 20).astype(int)),
+        'max_features': ['auto', 'sqrt', None] + list(arange(0.5, 1, 0.1)),
+        'max_leaf_nodes': [None] + list(linspace(10, 50, 500).astype(int)),
+        'min_samples_split': [2, 5, 10],
+        'bootstrap': [True, False]
+    }
+
+    # Estimator for use in random search
+    estimator = RandomForestClassifier(random_state = RANDOM_SEED)
+
+    # Create the random search model
+    rs = RandomizedSearchCV(
+        estimator, param_grid, n_jobs = -1,
+        scoring = 'roc_auc', cv = 3,
+        n_iter = 10, verbose = 1, random_state=RANDOM_SEED
+    )
+
+    rs.fit(train_set, train_labels)
+
+    return rs
 
 
 def avg_model_shape(random_forest):

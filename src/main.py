@@ -2,8 +2,8 @@ from pandas import read_csv
 from sklearn.metrics import accuracy_score, confusion_matrix, roc_auc_score
 
 from data_cleaning import clear_dataset, fill_NAN_fields_mean, fill_NAN_fields_zero
-from random_forest import (avg_model_shape, evaluate, features_importance, performance_comparison, random_forest,
-                           train_test_sets)
+from random_forest import (avg_model_shape, best_model, evaluate, features_importance, performance_comparison,
+                           random_forest, train_test_sets)
 from utils import path_relative_to, plot_confusion_matrix, plot_roc_curves, remove_non_laboratorial
 from variables import RF_CRITERION, RF_MAX_DEPTH, RF_MAX_FEATURES, RF_TREES
 
@@ -68,3 +68,30 @@ for label, dataset in what_analyse:
 
     accuracy = accuracy_score(test_labels, performance[1][0])
     print(f'\nMean accuracy score: {accuracy:.3}')
+
+    print('\nBest Model')
+    bm = best_model(train, train_labels)
+    print('params', bm.best_params_)
+    model = bm.best_estimator_
+
+    performance = performance_comparison(model, [train, test])
+
+    print(f'\tTrain ROC AUC Score: {roc_auc_score(train_labels, performance[0][1])}')
+    print(f'\tTest ROC AUC Score: {roc_auc_score(test_labels, performance[1][1])}')
+
+    print('\nModel Evaluation')
+    evaluation = evaluate(
+        {
+            'labels': test_labels,
+            'predictions': performance[1][0],
+            'probs': performance[1][1]
+        },
+        {
+            'labels': train_labels,
+            'predictions': performance[0][0],
+            'probs': performance[0][1]
+        },
+    )
+
+    plot_roc_curves(*evaluation)
+
