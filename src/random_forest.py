@@ -1,16 +1,18 @@
-from itertools import product
 
-import matplotlib.pyplot as pyplot
-from numpy import arange, mean
-from pandas import DataFrame
+
+
+from matplotlib.pyplot import axis
+from numpy import mean
+from pandas import DataFrame, Series
+from pandas.core.reshape.concat import concat
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import precision_score, recall_score, f1_score, roc_auc_score, roc_curve
+from sklearn.metrics import f1_score, precision_score, recall_score, roc_auc_score, roc_curve
 from sklearn.model_selection import train_test_split
 
 from variables import RANDOM_SEED, TEST_SET_PERC
 
 
-def train_test_sets(data_frame, result_label):
+def train_test_sets(data_frame, result_label='', result_column=None):
     '''Spliting a whole dataset into trainning and testing dataset
 
     Args:
@@ -20,33 +22,37 @@ def train_test_sets(data_frame, result_label):
     Returns:
     - Four elements list as follow: trainning set, testing set, trainning labels and testing labels
     '''
+    # Dropping 'Proteina C reativa mg/dL' if target is "has_covid_19" column
+    if not result_column:
+        if result_label == 'has_covid_19':
+            data_frame = data_frame.drop([
+                'proteina_c_reativa_mgdl'
+            ], axis='columns', errors='ignore')
 
-    # Dropping 'Proteina C reativa mg/dL' if target is "has_covid19" column
-    if result_label == 'has_covid19':
-        data_frame = data_frame.drop([
-            'Proteina C reativa mg/dL'
-        ], axis=1, errors='ignore')
+        result_column = data_frame.pop(result_label)
 
-    # Dropping non laboratorial variables
-    data_frame = data_frame.drop(
-        [
-            'age_group',
-            'Patient addmited to regular ward (1=yes, 0=no)',
-            'Patient addmited to semi-intensive unit (1=yes, 0=no)',
-            'Patient addmited to intensive care unit (1=yes, 0=no)'
-        ],
-        axis=1, errors='ignore'
-    )
+    train, test = DataFrame(), DataFrame()
+    train_labels, test_labels = Series(), Series()
 
-    result_label = data_frame.pop(result_label)
+    for value_class in result_column.unique():
+        to_drop = result_column.loc[result_column.values != value_class].index
 
-    return train_test_split(
-        data_frame, result_label,
-        stratify=result_label,
-        test_size=TEST_SET_PERC,
-        random_state=RANDOM_SEED
-    )
+        df = data_frame.copy().drop(index=to_drop)
+        rc = result_column.copy().drop(index=to_drop)
 
+        t_train, t_test, t_train_labels, t_test_labels = train_test_split(
+            df, rc,
+            stratify=rc,
+            test_size=TEST_SET_PERC,
+            random_state=RANDOM_SEED
+        )
+
+        train = concat([train, t_train], ignore_index=True)
+        test = concat([test, t_test], ignore_index=True)
+        train_labels = concat([train_labels, t_train_labels], ignore_index=True)
+        test_labels = concat([test_labels, t_test_labels], ignore_index=True)
+
+    return train, test, train_labels, test_labels
 
 def random_forest(trees=100, criterion='gini', max_depth=None, max_features='auto'):
     '''Initializing a Random Forest based on spefic controls
@@ -90,7 +96,7 @@ def avg_model_shape(random_forest):
     return [int(mean(v)) for v in [n_nodes, max_depths]]
 
 
-def performance(random_forest, datasets=[]):
+def performance_comparison(random_forest, datasets=[]):
     '''Evaluating Random Forest performance over datasets
 
     Args:
@@ -168,57 +174,3 @@ def evaluate(test_info, train_info):
     model_false_pos, model_true_pos, _ = roc_curve(test_info['labels'], test_info['probs'])
 
     return base_false_pos, base_true_pos, model_false_pos, model_true_pos
-
-
-def plot_roc_curves(base_false_pos, base_true_pos, model_false_pos, model_true_pos):
-    ''''Shows ROC curve.
-    Source: https://github.com/WillKoehrsen/Machine-Learning-Projects/blob/master/Random%20Forest%20Tutorial.ipynb
-    '''
-    pyplot.figure(figsize = (8, 6))
-    pyplot.rcParams['font.size'] = 16
-
-    # Plot both curves
-    pyplot.plot(base_false_pos, base_true_pos, 'b', label = 'baseline')
-    pyplot.plot(model_false_pos, model_true_pos, 'r', label = 'model')
-    pyplot.legend()
-    pyplot.xlabel('False Positive Rate')
-    pyplot.ylabel('True Positive Rate')
-    pyplot.title('ROC Curves')
-    plt.show()
-
-
-def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=pyplot.cm.Oranges):
-    '''This function prints and plots the confusion matrix.
-    Normalization can be applied by setting `normalize=True`.
-    Source: http://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
-    Source: http://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
-    '''
-    if normalize:
-        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        print("Normalized confusion matrix")
-    else:
-        print('Confusion matrix, without normalization')
-
-    print(cm)
-
-    pyplot.figure(figsize = (10, 10))
-    pyplot.imshow(cm, interpolation='nearest', cmap=cmap)
-    pyplot.title(title, size = 24)
-    pyplot.colorbar(aspect=4)
-    tick_marks = arange(len(classes))
-    pyplot.xticks(tick_marks, classes, rotation=45, size = 14)
-    pyplot.yticks(tick_marks, classes, size = 14)
-
-    fmt = '.2f' if normalize else 'd'
-    thresh = cm.max() / 2.
-
-    # Labeling the plot
-    for i, j in product(range(cm.shape[0]), range(cm.shape[1])):
-        pyplot.text(j, i, format(cm[i, j], fmt), fontsize = 20,
-                 horizontalalignment="center",
-                 color="white" if cm[i, j] > thresh else "black")
-
-    pyplot.grid(None)
-    pyplot.tight_layout()
-    pyplot.ylabel('True label', size = 18)
-    pyplot.xlabel('Predicted label', size = 18)

@@ -1,7 +1,8 @@
-from variables import MISS_DATA_TO_DROP_PERC
-
 import numpy as np
 from pandas import concat, get_dummies
+
+from utils import to_snake_case
+from variables import MISS_DATA_TO_DROP_PERC
 
 
 def clear_dataset(data_frame):
@@ -13,58 +14,66 @@ def clear_dataset(data_frame):
     Returns:
     - `DataFrame:clean_df`
     '''
-
     data_frame = _rename_columns(data_frame)
-    data_frame = replace_humanized_values(data_frame)
-    data_frame = categorical_to_number(data_frame)
+    data_frame = _replace_humanized_values(data_frame)
+    data_frame = _categorical_to_number(data_frame)
     #data_frame = fill_NAN_fields_zero(data_frame)
     #data_frame = fill_NAN_fields_mean(data_frame)
     #data_frame = fill_NAN_fields_group_mean(data_frame)  #overfitting
 
-    data_frame = clear_false_NAN_data(data_frame)
-
     data_frame = _drop_metacolumns(data_frame)
     data_frame = _drop_more_blank_columns(data_frame)
 
+    data_frame = _drop_more_blank_lines(data_frame)
+
     return data_frame
 
 
-def replace_humanized_values(data_frame):
+def _replace_humanized_values(data_frame):
     # Replacing humanized values with 0, 1 and nan
-    data_frame = data_frame.replace(['positive', 'detected', 'present', 'negative', 'not_detected', 'normal', 'absent', 'Ausentes', 'not_done',  'Não Realizado'],
-                    [1,1,1,0,0,0,0,0,np.nan,np.nan])
+    data_frame = data_frame.replace(
+        ['positive', 'detected', 'present'],
+        1
+    )
+    data_frame = data_frame.replace(
+        ['negative', 'not_detected', 'normal', 'absent', 'Ausentes'],
+        0
+    )
+    data_frame = data_frame.replace(
+        ['not_done',  'Não Realizado'],
+        np.nan
+    )
 
     # Replacing inequalities with number and defining columns datatype to float where it concerns
-    data_frame['Urine - Leukocytes'].replace('<1000', '999', inplace=True)
-    data_frame['Urine - Leukocytes'] = data_frame['Urine - Leukocytes'].astype("float64")
-    data_frame['Urine - pH'] = data_frame['Urine - pH'].astype("float64")
+    data_frame['urine_leukocytes'] = data_frame['urine_leukocytes'].replace('<1000', '999', inplace=True)
+    data_frame['urine_leukocytes'] = data_frame['urine_leukocytes'].astype("float64")
+    data_frame['urine_ph'] = data_frame['urine_ph'].astype('float64')
 
     return data_frame
 
 
-def categorical_to_number(data_frame):
+def _categorical_to_number(data_frame):
     # Get dataframe without dtype object, except column "Patient ID"
-    data_not_object = concat([data_frame['patient_id'], data_frame[data_frame.dtypes[data_frame.dtypes != "object"].index]], axis=1)
+    data_not_object = concat(
+        [data_frame['patient_id'], data_frame[data_frame.dtypes[data_frame.dtypes != "object"].index]],
+        axis='columns'
+    )
 
     # Get dataframe with dummies
     data_dummies = get_dummies(data_frame[data_frame.dtypes[data_frame.dtypes == "object"].drop('patient_id').index])
 
     # Concatenate dataframe with dummies
-    data_frame = concat([data_not_object, data_dummies], axis=1)
+    data_frame = concat([data_not_object, data_dummies], axis='columns')
 
     return data_frame
 
 
-def fill_NAN_fields_zero(train_set, test_set):
-    return train_set.fillna(0), test_set.fillna(0)
+def fill_NAN_fields_zero(data_frame):
+    return data_frame.fillna(0)
 
 
-def fill_NAN_fields_mean(train_set, test_set):
-    return train_set.fillna(train_set.mean()), test_set.fillna(test_set.mean())
-
-
-def clear_false_NAN_data(data_frame):
-    return data_frame
+def fill_NAN_fields_mean(data_frame):
+    return data_frame.fillna(data_frame.mean())
 
 
 def _rename_columns(data_frame):
@@ -76,10 +85,24 @@ def _rename_columns(data_frame):
     Returns:
     - `Dataframe:updated_data_frame`
     '''
-    return data_frame.rename(columns={
-        'Patient ID': 'patient_id',
-        'Patient age quantile': 'age_group',
-        'SARS-Cov-2 exam result': 'has_covid19',
+    data_frame = data_frame.rename(columns={
+        'Patient age quantile': 'Age Group',
+        'SARS-Cov-2 exam result': 'Has COVID-19',
+        'pCO2 (venous blood gas analysis)': 'Venous pCO2',
+        'Hb saturation (venous blood gas analysis)': 'Venous Hb saturation',
+        'Base excess (venous blood gas analysis)': 'Venous Base excess',
+        'pO2 (venous blood gas analysis)': 'Venous pO2',
+        'Fio2 (venous blood gas analysis)': 'Venous Fio2',
+        'Total CO2 (venous blood gas analysis)': 'Venous Total CO2',
+        'pH (venous blood gas analysis)': 'Venous pH',
+        'HCO3 (venous blood gas analysis)': 'Venous HCO3',
+        'pCO2 (arterial blood gas analysis)': 'Arterial pCO2',
+        'Hb saturation (arterial blood gases)': 'Arterial Hb saturation',
+        'Base excess (arterial blood gas analysis)': 'Arterial Base excess',
+        'pH (arterial blood gas analysis)': 'Arterial pH',
+        'Total CO2 (arterial blood gas analysis)': 'Arterial Total CO2',
+        'HCO3 (arterial blood gas analysis)': 'Arterial HCO3',
+        'pO2 (arterial blood gas analysis)': 'Arterial pO2',
         # 'Patient addmited to regular ward (1=yes, 0=no)': '',
         # 'Patient addmited to semi-intensive unit (1=yes, 0=no)': '',
         # 'Patient addmited to intensive care unit (1=yes, 0=no)': '',
@@ -134,14 +157,6 @@ def _rename_columns(data_frame):
         # 'Ionized calcium ': '',
         # 'Strepto A': '',
         # 'Magnesium': '',
-        # 'pCO2 (venous blood gas analysis)': '',
-        # 'Hb saturation (venous blood gas analysis)': '',
-        # 'Base excess (venous blood gas analysis)': '',
-        # 'pO2 (venous blood gas analysis)': '',
-        # 'Fio2 (venous blood gas analysis)': '',
-        # 'Total CO2 (venous blood gas analysis)': '',
-        # 'pH (venous blood gas analysis)': '',
-        # 'HCO3 (venous blood gas analysis)': '',
         # 'Rods #': '',
         # 'Segmented': '',
         # 'Promyelocytes': '',
@@ -178,17 +193,12 @@ def _rename_columns(data_frame):
         # 'Lipase dosage': '',
         # 'D-Dimer': '',
         # 'Albumin': '',
-        # 'Hb saturation (arterial blood gases)': '',
-        # 'pCO2 (arterial blood gas analysis)': '',
-        # 'Base excess (arterial blood gas analysis)': '',
-        # 'pH (arterial blood gas analysis)': '',
-        # 'Total CO2 (arterial blood gas analysis)': '',
-        # 'HCO3 (arterial blood gas analysis)': '',
-        # 'pO2 (arterial blood gas analysis)': '',
         # 'Arteiral Fio2': '',
         # 'Phosphor': '',
         # 'ctO2 (arterial blood gas analysis)': '',
     })
+
+    return data_frame.rename(to_snake_case, axis='columns')
 
 
 def _drop_metacolumns(data_frame):
@@ -224,6 +234,18 @@ def _drop_more_blank_columns(data_frame):
     return data_frame.drop(columns=to_drop)
 
 
+def _drop_more_blank_lines(data_frame):
+    # print(round(data_frame.shape[1] * .25))
+    # print(data_frame['has_covid_19'].value_counts())
+    # min_positive_filled = data_frame.loc[data_frame['has_covid_19'] == 1].count(axis='columns').min()
+    # print(min_positive_filled)
+    # print((data_frame.loc[data_frame['has_covid_19'] == 0].count(axis='columns') > round(data_frame.shape[1] * .7)).value_counts())
+
+    # print(data_frame.loc[data_frame['has_covid_19'] == 0, :].shape)
+    # print(data_frame.loc[data_frame['has_covid_19'] == 1, :].shape)
+
+    return data_frame
+
 # Function to visualize columns dtype object for posterior data cleaning
 def analyze_object_columns(data_frame):
     object_columns = []
@@ -231,8 +253,9 @@ def analyze_object_columns(data_frame):
     # Get columns with dtype object
     for c in data_frame.columns:
         column_dtype = data_frame[c].dtype
-        if column_dtype == 'object' and c != 'Patient ID':
+        if column_dtype == 'object' and c != 'patient_id':
             object_columns.append(c)
+
     print(object_columns)
     print()
 
