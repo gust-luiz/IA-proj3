@@ -235,14 +235,15 @@ def _drop_more_blank_columns(data_frame):
 
 
 def _drop_more_blank_lines(data_frame):
-    # print(round(data_frame.shape[1] * .25))
-    # print(data_frame['has_covid_19'].value_counts())
-    # min_positive_filled = data_frame.loc[data_frame['has_covid_19'] == 1].count(axis='columns').min()
-    # print(min_positive_filled)
-    # print((data_frame.loc[data_frame['has_covid_19'] == 0].count(axis='columns') > round(data_frame.shape[1] * .7)).value_counts())
+    min_positive_filled = data_frame.loc[data_frame['has_covid_19'] == 1].count(axis='columns').min()
 
-    # print(data_frame.loc[data_frame['has_covid_19'] == 0, :].shape)
-    # print(data_frame.loc[data_frame['has_covid_19'] == 1, :].shape)
+    negative_filled = data_frame.loc[data_frame['has_covid_19'] == 0].count(axis='columns')
+    negative_filled = negative_filled > round(data_frame.shape[1] * (1 - min_positive_filled / data_frame.shape[1]))
+
+    data_frame = data_frame.drop(index=negative_filled.loc[negative_filled.values == False].index)
+
+    print(data_frame['has_covid_19'].value_counts())
+    input()
 
     return data_frame
 
