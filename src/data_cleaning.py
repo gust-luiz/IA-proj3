@@ -233,17 +233,52 @@ def _drop_more_blank_columns(data_frame):
 
 
 def drop_negative_excess_covid(data_frame):
-    min_positive_filled = data_frame.loc[data_frame['has_covid_19'] == 1].count(axis='columns').min()
+    min_positive_filled = 1.2 * data_frame.loc[data_frame['has_covid_19'] == 1].count(axis='columns').min()
 
     negative_filled = data_frame.loc[data_frame['has_covid_19'] == 0].count(axis='columns')
     negative_filled = negative_filled > round(data_frame.shape[1] * (1 - min_positive_filled / data_frame.shape[1]))
 
     data_frame = data_frame.drop(index=negative_filled.loc[negative_filled.values == False].index)
 
-    # print(data_frame['has_covid_19'].value_counts())
-    # input()
+    print(f'covid result counts: ({min_positive_filled})')
+    print(data_frame['has_covid_19'].value_counts())
+    input()
 
     return data_frame
+
+
+def drop_excess_data(data_frame, serie):
+    min_cnt, min_value = float('inf'), None
+
+    data_frame['temporary'] = serie
+
+    for value in serie.unique():
+        cnt = int(serie.loc[serie == value].count())
+
+        if cnt < min_cnt:
+            min_cnt = cnt
+            min_value = value
+
+    min_filled = 1.2 * data_frame.loc[data_frame['temporary'] == min_value].count(axis='columns').min()
+
+    for value in serie.unique():
+        if value == min_value:
+            continue
+
+        c_filled = data_frame.loc[data_frame['temporary'] == value].count(axis='columns')
+        c_filled = c_filled > round(data_frame.shape[1] * (1 - min_filled / data_frame.shape[1]))
+        c_filled = c_filled.loc[c_filled.values == False].index
+
+        data_frame = data_frame.drop(index=c_filled)
+        serie = serie.drop(index=c_filled)
+
+    print(f'after drop counts: ({min_filled})')
+    print(data_frame['temporary'].value_counts())
+    # input()
+
+    data_frame.pop('temporary')
+
+    return data_frame, serie
 
 # Function to visualize columns dtype object for posterior data cleaning
 def analyze_object_columns(data_frame):

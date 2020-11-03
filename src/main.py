@@ -1,6 +1,6 @@
 from pandas import read_csv
 
-from data_cleaning import clear_dataset, fill_NAN_fields_zero, drop_negative_excess_covid
+from data_cleaning import clear_dataset, fill_NAN_fields_zero, drop_negative_excess_covid, drop_excess_data
 from random_forest import best_random_forest, random_forest, stats_report, train_test_sets
 from utils import path_relative_to, remove_non_laboratorial
 from variables import RF_CRITERION, RF_MAX_DEPTH, RF_MAX_FEATURES, RF_TREES
@@ -11,22 +11,24 @@ data_frame = clear_dataset(read_csv(path_relative_to(__file__, '../ref/raw_covid
 data_frame, non_laboratorial = remove_non_laboratorial(data_frame)
 
 what_analyse = [
-    ('has_covid_19', None, 'COVID-19'),
-    ('', non_laboratorial['patient_addmited_to_regular_ward'], 'Patient addmited to regular ward'),
+    # ('has_covid_19', None, 'COVID-19'),
+    # ('', non_laboratorial['patient_addmited_to_regular_ward'], 'Patient addmited to regular ward'),
     ('', non_laboratorial['patient_addmited_to_semi_intensive_unit'], 'Patient addmited to semi-intensive unit'),
-    ('', non_laboratorial['patient_addmited_to_intensive_care_unit'], 'Patient addmited to intensive care unit'),
+    # ('', non_laboratorial['patient_addmited_to_intensive_care_unit'], 'Patient addmited to intensive care unit'),
 ]
 
-for label, dataset, title in what_analyse:
+for label, serie, title in what_analyse:
     if title == 'COVID-19':
         data_frame = drop_negative_excess_covid(data_frame)
+    else:
+        data_frame, serie = drop_excess_data(data_frame, serie)
 
-    if dataset is not None:
-        print(dataset.value_counts())
+    if serie is not None:
+        print(serie.value_counts())
 
-    print(data_frame.shape)
+    print('Data shape', data_frame.shape)
 
-    train, test, train_labels, test_labels = train_test_sets(data_frame, result_label=label, result_column=dataset)
+    train, test, train_labels, test_labels = train_test_sets(data_frame, result_label=label, result_column=serie)
     train, test = fill_NAN_fields_zero(train), fill_NAN_fields_zero(test)
 
     print('+' * 20)
