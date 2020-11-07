@@ -17,9 +17,6 @@ def clear_dataset(data_frame):
     data_frame = _rename_columns(data_frame)
     data_frame = _replace_humanized_values(data_frame)
     data_frame = _categorical_to_number(data_frame)
-    #data_frame = fill_NAN_fields_zero(data_frame)
-    #data_frame = fill_NAN_fields_mean(data_frame)
-    #data_frame = fill_NAN_fields_group_mean(data_frame)  #overfitting
 
     data_frame = _drop_metacolumns(data_frame)
     data_frame = _drop_more_blank_columns(data_frame)

@@ -50,10 +50,22 @@ def to_snake_case(string):
     return string.strip().replace(' ', '_').lower() #apply snake_case pattern
 
 
+def create_went_home_column(data_frame):
+    data_frame['patient_went_to_home'] = 0
+
+    data_frame.loc[data_frame['patient_addmited_to_regular_ward'] +
+                    data_frame['patient_addmited_to_semi_intensive_unit'] +
+                    data_frame['patient_addmited_to_intensive_care_unit'] == 0, 
+                    'patient_went_to_home'] = 1
+
+    return data_frame
+
+
 def remove_non_laboratorial(data_frame):
     dropped_data = {}
     non_laboratorial_labels = [
         'age_group',
+        'patient_went_to_home',
         'patient_addmited_to_regular_ward',
         'patient_addmited_to_semi_intensive_unit',
         'patient_addmited_to_intensive_care_unit',

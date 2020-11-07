@@ -1,20 +1,24 @@
 from pandas import read_csv
+import pandas
 
 from data_cleaning import clear_dataset, fill_NAN_fields_zero, drop_negative_excess_covid, drop_excess_data
 from random_forest import best_random_forest, random_forest, stats_report, train_test_sets
-from utils import path_relative_to, remove_non_laboratorial
+from utils import path_relative_to, remove_non_laboratorial, create_went_home_column
 from variables import RF_CRITERION, RF_MAX_DEPTH, RF_MAX_FEATURES, RF_TREES
 
 # All available data minimally cleaned
 data_frame = clear_dataset(read_csv(path_relative_to(__file__, '../ref/raw_covid19_dataset.csv')))
+
+data_frame = create_went_home_column(data_frame)
 
 data_frame, non_laboratorial = remove_non_laboratorial(data_frame)
 
 what_analyse = [
     # ('has_covid_19', None, 'COVID-19'),
     # ('', non_laboratorial['patient_addmited_to_regular_ward'], 'Patient addmited to regular ward'),
-    ('', non_laboratorial['patient_addmited_to_semi_intensive_unit'], 'Patient addmited to semi-intensive unit'),
+    # ('', non_laboratorial['patient_addmited_to_semi_intensive_unit'], 'Patient addmited to semi-intensive unit'),
     # ('', non_laboratorial['patient_addmited_to_intensive_care_unit'], 'Patient addmited to intensive care unit'),
+    ('', non_laboratorial['patient_went_to_home'], 'Patient went to home'),
 ]
 
 for label, serie, title in what_analyse:
