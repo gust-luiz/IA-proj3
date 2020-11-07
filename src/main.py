@@ -1,6 +1,4 @@
 from pandas import read_csv
-import pandas
-
 from data_cleaning import clear_dataset, fill_NAN_fields_zero, drop_negative_excess_covid, drop_excess_data
 from random_forest import best_random_forest, random_forest, stats_report, train_test_sets
 from utils import path_relative_to, remove_non_laboratorial, create_went_home_column
