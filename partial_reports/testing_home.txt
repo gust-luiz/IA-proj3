@@ -1,0 +1,101 @@
+       Model Configuration:
+         RandomForestClassifier(max_depth=9, max_features='sqrt', n_estimators=150,
+                       n_jobs=-1)
+**************************************************
+Forest Dimension:
+        Average number of nodes 97
+        Average maximum depth 9
+
+Performance Comparison:
+        Train ROC AUC Score: 0.92831
+        Test ROC AUC Score: 0.89165
+
+Feature importances:
+                              feature  importance
+1                          hematocrit    0.100422
+11                        eosinophils    0.078194
+14  red_blood_cell_distribution_width    0.076313
+2                          hemoglobin    0.073326
+8                          leukocytes    0.071955
+5                     red_blood_cells    0.060383
+6                         lymphocytes    0.059622
+3                           platelets    0.056996
+13                          monocytes    0.056637
+10        mean_corpuscular_hemoglobin    0.055237
+
+Model Evaluation
+                 Recall
+                         Baseline: 1.0
+                         Test: 0.98
+                         Train: 1.0
+                 Precision
+                         Baseline: 0.88
+                         Test: 0.92
+                         Train: 0.96
+                 F1-score
+                         Baseline: 0.94
+                         Test: 0.95
+                         Train: 0.98
+                 Roc
+                         Baseline: 0.5
+                         Test: 0.89
+                         Train: 0.93
+Confusion matrix, without normalization:
+[[ 19  38]
+ [  7 428]]
+
+Mean accuracy score:
+0.909
+**************************************************
+
+
+
+Automatically searched Best Model
+        Best params:
+                 {'n_estimators': 106, 'min_samples_split': 10, 'max_leaf_nodes': 23, 'max_features': 0.7, 'max_depth': 6, 'criterion': 'gini', 'bootstrap': True}
+**************************************************
+Forest Dimension:
+        Average number of nodes 36
+        Average maximum depth 6
+
+Performance Comparison:
+        Train ROC AUC Score: 0.91369
+        Test ROC AUC Score: 0.88772
+
+Feature importances:
+                              feature  importance
+11                        eosinophils    0.154172
+1                          hematocrit    0.120007
+14  red_blood_cell_distribution_width    0.107389
+2                          hemoglobin    0.096764
+0                        has_covid_19    0.083405
+8                          leukocytes    0.072662
+6                         lymphocytes    0.054256
+13                          monocytes    0.051801
+15        respiratory_syncytial_virus    0.040976
+3                           platelets    0.038223
+
+Model Evaluation
+                 Recall
+                         Baseline: 1.0
+                         Test: 0.99
+                         Train: 1.0
+                 Precision
+                         Baseline: 0.88
+                         Test: 0.92
+                         Train: 0.95
+                 F1-score
+                         Baseline: 0.94
+                         Test: 0.95
+                         Train: 0.97
+                 Roc
+                         Baseline: 0.5
+                         Test: 0.89
+                         Train: 0.91
+Confusion matrix, without normalization:
+[[ 21  36]
+ [  5 430]]
+
+Mean accuracy score:
+0.917
+**************************************************

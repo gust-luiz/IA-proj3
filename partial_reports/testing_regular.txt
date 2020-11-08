@@ -1,0 +1,333 @@
+
+
+0.0    5565
+1.0      79
+Name: patient_addmited_to_regular_ward, dtype: int64
+(5644, 47)
+++++++++++++++++++++
+Testing: Patient addmited to regular ward
+++++++++++++++++++++
+        Model Configuration:
+         RandomForestClassifier(max_depth=9, max_features='sqrt', n_estimators=150,
+                       n_jobs=-1)
+**************************************************
+Forest Dimension:
+        Average number of nodes 83
+        Average maximum depth 9
+
+Performance Comparison:
+        Train ROC AUC Score: 0.96128
+        Test ROC AUC Score: 0.83041
+
+Feature importances:
+                        feature  importance
+3                     platelets    0.081847
+2                    hemoglobin    0.071918
+8                    leukocytes    0.067202
+1                    hematocrit    0.066543
+11                  eosinophils    0.065408
+13                    monocytes    0.064969
+5               red_blood_cells    0.064877
+6                   lymphocytes    0.064536
+0                  has_covid_19    0.062957
+10  mean_corpuscular_hemoglobin    0.059293
+
+Model Evaluation
+/home/rodrigo/Documentos/IA-proj3/.proj/lib/python3.8/site-packages/sklearn/metrics/_classification.py:1221: UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 due to no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+                 Recall
+                         Baseline: 1.0
+                         Test: 0.0
+                         Train: 0.71
+                 Precision
+                         Baseline: 0.06
+                         Test: 0.0
+                         Train: 1.0
+                 F1-score
+                         Baseline: 0.1
+                         Test: 0.0
+                         Train: 0.83
+                 Roc
+                         Baseline: 0.5
+                         Test: 0.83
+                         Train: 0.96
+Confusion matrix, without normalization:
+[[462   0]
+ [ 27   0]]
+
+Mean accuracy score:
+0.945
+**************************************************
+
+
+
+Automatically searched Best Model
+        Best params:
+                 {'n_estimators': 161, 'min_samples_split': 5, 'max_leaf_nodes': 32, 'max_features': 0.5, 'max_depth': 18, 'criterion': 'entropy', 'bootstrap': True}
+**************************************************
+Forest Dimension:
+        Average number of nodes 62
+        Average maximum depth 10
+
+Performance Comparison:
+        Train ROC AUC Score: 0.96476
+        Test ROC AUC Score: 0.83578
+
+Feature importances:
+                        feature  importance
+0                  has_covid_19    0.122053
+6                   lymphocytes    0.103419
+3                     platelets    0.096355
+11                  eosinophils    0.074701
+1                    hematocrit    0.063350
+13                    monocytes    0.056053
+8                    leukocytes    0.054860
+10  mean_corpuscular_hemoglobin    0.052717
+5               red_blood_cells    0.047861
+2                    hemoglobin    0.045872
+
+Model Evaluation
+                 Recall
+                         Baseline: 1.0
+                         Test: 0.11
+                         Train: 0.73
+                 Precision
+                         Baseline: 0.06
+                         Test: 1.0
+                         Train: 1.0
+                 F1-score
+                         Baseline: 0.1
+                         Test: 0.2
+                         Train: 0.84
+                 Roc
+                         Baseline: 0.5
+                         Test: 0.84
+                         Train: 0.96
+Confusion matrix, without normalization:
+[[462   0]
+ [ 24   3]]
+
+Mean accuracy score:
+0.951
+**************************************************
+
+		Parameterized RandomForest
+	Model Configuration:
+	 RandomForestClassifier(criterion='entropy', max_depth=9, n_estimators=200,
+                       n_jobs=-1)
+**************************************************
+Forest Dimension:
+	Average number of nodes 90
+	Average maximum depth 9
+
+Performance Comparison:
+	Train ROC AUC Score: 0.95001
+	Test ROC AUC Score: 0.872
+
+Feature importances:
+                              feature  importance
+3                           platelets    0.108602
+6                         lymphocytes    0.095063
+8                          leukocytes    0.075033
+11                        eosinophils    0.067296
+10        mean_corpuscular_hemoglobin    0.062060
+2                          hemoglobin    0.055762
+14  red_blood_cell_distribution_width    0.055561
+13                          monocytes    0.053706
+1                          hematocrit    0.053454
+4                mean_platelet_volume    0.052607
+
+Model Evaluation
+		 Recall
+			 Baseline: 1.0
+			 Test: 0.0
+			 Train: 0.81
+		 Precision
+			 Baseline: 0.01
+			 Test: 0.0
+			 Train: 1.0
+		 F1-score
+			 Baseline: 0.03
+			 Test: 0.0
+			 Train: 0.89
+		 Roc
+			 Baseline: 0.5
+			 Test: 0.87
+			 Train: 0.95
+Confusion matrix, without normalization:
+[[1854    1]
+ [  27    0]]
+
+Mean accuracy score:
+0.985
+**************************************************
+
+
+
+Automatically searched Best Model
+	Best params:
+		 {'n_estimators': 141, 'min_samples_split': 2, 'max_leaf_nodes': 11, 'max_features': 'sqrt', 'max_depth': 6, 'bootstrap': True}
+**************************************************
+Forest Dimension:
+	Average number of nodes 21
+	Average maximum depth 5
+
+Performance Comparison:
+	Train ROC AUC Score: 0.94372
+	Test ROC AUC Score: 0.87788
+
+Feature importances:
+                                      feature  importance
+8                                  leukocytes    0.121942
+3                                   platelets    0.119977
+6                                 lymphocytes    0.084072
+11                                eosinophils    0.067597
+1                                  hematocrit    0.062079
+2                                  hemoglobin    0.057322
+10                mean_corpuscular_hemoglobin    0.054495
+0                                has_covid_19    0.053165
+5                             red_blood_cells    0.053165
+7   mean_corpuscular_hemoglobin_concentration    0.052512
+
+Model Evaluation
+		 Recall
+			 Baseline: 1.0
+			 Test: 0.0
+			 Train: 0.08
+		 Precision
+			 Baseline: 0.01
+			 Test: 0.0
+			 Train: 1.0
+		 F1-score
+			 Baseline: 0.03
+			 Test: 0.0
+			 Train: 0.14
+		 Roc
+			 Baseline: 0.5
+			 Test: 0.88
+			 Train: 0.94
+Confusion matrix, without normalization:
+[[1855    0]
+ [  27    0]]
+
+Mean accuracy score:
+0.986
+**************************************************
+
+
+after drop counts: (18.0)
+0.0    1386
+1.0      79
+Name: temporary, dtype: int64
+
+0.0    1386
+1.0      79
+Name: patient_addmited_to_regular_ward, dtype: int64
+Data shape (1465, 47)
+++++++++++++++++++++
+Testing: Patient addmited to regular ward
+++++++++++++++++++++
+                Parameterized RandomForest
+        Model Configuration:
+         RandomForestClassifier(criterion='entropy', max_depth=9, n_estimators=200,
+                       n_jobs=-1)
+**************************************************
+Forest Dimension:
+        Average number of nodes 81
+        Average maximum depth 9
+
+Performance Comparison:
+        Train ROC AUC Score: 0.95015
+        Test ROC AUC Score: 0.80103
+
+Feature importances:
+                                      feature  importance
+0                                has_covid_19    0.092712
+6                                 lymphocytes    0.086432
+3                                   platelets    0.084392
+8                                  leukocytes    0.067265
+11                                eosinophils    0.062983
+1                                  hematocrit    0.058386
+13                                  monocytes    0.056385
+10                mean_corpuscular_hemoglobin    0.055123
+5                             red_blood_cells    0.054983
+7   mean_corpuscular_hemoglobin_concentration    0.053324
+
+Model Evaluation
+                 Recall
+                         Baseline: 1.0
+                         Test: 0.04
+                         Train: 0.79
+                 Precision
+                         Baseline: 0.06
+                         Test: 0.5
+                         Train: 1.0
+                 F1-score
+                         Baseline: 0.1
+                         Test: 0.07
+                         Train: 0.88
+                 Roc
+                         Baseline: 0.5
+                         Test: 0.8
+                         Train: 0.95
+Confusion matrix, without normalization:
+[[461   1]
+ [ 26   1]]
+
+Mean accuracy score:
+0.945
+**************************************************
+
+
+
+Automatically searched Best Model
+        Best params:
+                 {'n_estimators': 41, 'min_samples_split': 5, 'max_leaf_nodes': 11, 'max_features': 'sqrt', 'max_depth': 6, 'bootstrap': True}
+**************************************************
+Forest Dimension:
+        Average number of nodes 21
+        Average maximum depth 5
+
+Performance Comparison:
+        Train ROC AUC Score: 0.91204
+        Test ROC AUC Score: 0.75645
+
+Feature importances:
+                              feature  importance
+3                           platelets    0.088071
+0                        has_covid_19    0.088012
+8                          leukocytes    0.085512
+6                         lymphocytes    0.072308
+2                          hemoglobin    0.066336
+1                          hematocrit    0.063315
+11                        eosinophils    0.063230
+10        mean_corpuscular_hemoglobin    0.059199
+14  red_blood_cell_distribution_width    0.058897
+5                     red_blood_cells    0.047067
+
+Model Evaluation
+/home/rodrigo/Documentos/IA-proj3/.proj/lib/python3.8/site-packages/sklearn/metrics/_classification.py:1221: UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 due to no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+                 Recall
+                         Baseline: 1.0
+                         Test: 0.0
+                         Train: 0.19
+                 Precision
+                         Baseline: 0.06
+                         Test: 0.0
+                         Train: 1.0
+                 F1-score
+                         Baseline: 0.1
+                         Test: 0.0
+                         Train: 0.32
+                 Roc
+                         Baseline: 0.5
+                         Test: 0.76
+                         Train: 0.91
+Confusion matrix, without normalization:
+[[462   0]
+ [ 27   0]]
+
+Mean accuracy score:
+0.945
+**************************************************

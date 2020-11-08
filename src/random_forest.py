@@ -73,7 +73,8 @@ def random_forest(trees=100, criterion='gini', max_depth=None, max_features='aut
         max_depth=max_depth,
         max_features=max_features,
         n_jobs=-1,
-        bootstrap=True
+        bootstrap=True,
+        random_state=RANDOM_SEED
     )
 
 
@@ -96,7 +97,8 @@ def best_random_forest():
     return RandomizedSearchCV(
         estimator, param_grid,
         scoring = 'roc_auc', cv = 3,
-        n_iter = 20, n_jobs = -1
+        n_iter = 20, n_jobs = -1,
+        random_state=RANDOM_SEED
     )
 
 
@@ -186,10 +188,13 @@ def evaluate(test_info, train_info, print_tab=0):
     }
 
     for metric in ['recall', 'precision', 'f1-score', 'roc']:
-        print(print_tab * '\t', f'{metric.capitalize()}')
-        print((print_tab + 1) * '\t', f'Baseline: {round(baseline[metric], 2)}')
-        print((print_tab + 1) * '\t', f'Test: {round(results[metric], 2)}')
-        print((print_tab + 1) * '\t', f'Train: {round(train_results[metric], 2)}')
+        if print_tab > 0:
+            print(print_tab * '\t', f'{metric.capitalize()}')
+            print((print_tab + 1) * '\t', f'Baseline: {round(baseline[metric], 2)}')
+            print((print_tab + 1) * '\t', f'Test: {round(results[metric], 2)}')
+            print((print_tab + 1) * '\t', f'Train: {round(train_results[metric], 2)}')
+        else:
+            print(f'{round(baseline[metric], 2)};{round(results[metric], 2)};{round(train_results[metric], 2)}', end=';')
 
     # Calculate false positive rates and true positive rates
     base_false_pos, base_true_pos, _ = roc_curve(test_info['labels'], [1 for _ in range(len(test_info['labels']))])
@@ -199,23 +204,32 @@ def evaluate(test_info, train_info, print_tab=0):
 
 
 def stats_report(model, train, test, train_labels, test_labels, print_tab=0):
-    print('*' * 50)
+    if print_tab > 0:
+        print('*' * 50)
     avg_n_nodes, avg_depth = avg_model_shape(model)
 
-    print('Forest Dimension:')
-    print(f'\tAverage number of nodes {avg_n_nodes}')
-    print(f'\tAverage maximum depth {avg_depth}')
+    if print_tab > 0:
+        print('Forest Dimension:')
+        print(f'\tAverage number of nodes {avg_n_nodes}')
+        print(f'\tAverage maximum depth {avg_depth}')
+    else:
+        print(f"{avg_n_nodes};{avg_depth}", end=';')
 
     performance = performance_comparison(model, [train, test])
 
-    print('\nPerformance Comparison:')
-    print(f'\tTrain ROC AUC Score: {roc_auc_score(train_labels, performance[0][1]):.5}')
-    print(f'\tTest ROC AUC Score: {roc_auc_score(test_labels, performance[1][1]):.5}')
+    if print_tab > 0:
+        print('\nPerformance Comparison:')
+        print(f'\tTrain ROC AUC Score: {roc_auc_score(train_labels, performance[0][1]):.5}')
+        print(f'\tTest ROC AUC Score: {roc_auc_score(test_labels, performance[1][1]):.5}')
+    else:
+        print(f'{roc_auc_score(train_labels, performance[0][1]):.5};{roc_auc_score(test_labels, performance[1][1]):.5}', end=';')
 
-    print('\nFeature importances:')
-    print(features_importance(model, list(train.columns)))
+    if print_tab > 0:
+        print('\nFeature importances:')
+        print(features_importance(model, list(train.columns)))
 
-    print('\nModel Evaluation')
+        print('\nModel Evaluation')
+
     evaluation = evaluate(
         {
             'labels': test_labels,
@@ -229,16 +243,22 @@ def stats_report(model, train, test, train_labels, test_labels, print_tab=0):
         },
         print_tab=print_tab + 1
     )
-    plot_roc_curves(*evaluation)
+    if print_tab > 0:
+        plot_roc_curves(*evaluation)
 
     cm = confusion_matrix(test_labels, performance[1][0])
-    plot_confusion_matrix(
-        cm,
-        classes = ['Poor Health', 'Good Health'],
-        title = 'Health Confusion Matrix'
-    )
+    # print(cm)
+    if print_tab > 0:
+        plot_confusion_matrix(
+            cm,
+            classes = ['Hospital', 'Em casa'],
+            title = 'Matriz de Confusão Acompanhamento de casa'
+        )
 
-    print(f'\nMean accuracy score:')
-    print(f'{accuracy_score(test_labels, performance[1][0]):.3}')
+    if print_tab > 0:
+        print(f'\nMean accuracy score:')
+        print(f'{accuracy_score(test_labels, performance[1][0]):.3}')
 
-    print('*' * 50)
+        print('*' * 50)
+    else:
+        print(f'{accuracy_score(test_labels, performance[1][0]):.3}')

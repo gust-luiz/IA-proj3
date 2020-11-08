@@ -1,7 +1,8 @@
 from pandas import read_csv
-from data_cleaning import clear_dataset, fill_NAN_fields_zero, drop_negative_excess_covid, drop_excess_data
+
+from data_cleaning import clear_dataset, drop_excess_data, drop_negative_excess_covid, fill_NAN_fields_zero
 from random_forest import best_random_forest, random_forest, stats_report, train_test_sets
-from utils import path_relative_to, remove_non_laboratorial, create_went_home_column
+from utils import create_went_home_column, path_relative_to, remove_non_laboratorial
 from variables import RF_CRITERION, RF_MAX_DEPTH, RF_MAX_FEATURES, RF_TREES
 
 # All available data minimally cleaned
@@ -12,7 +13,7 @@ data_frame = create_went_home_column(data_frame)
 data_frame, non_laboratorial = remove_non_laboratorial(data_frame)
 
 what_analyse = [
-    ('has_covid_19', None, 'COVID-19'),
+    # ('has_covid_19', None, 'COVID-19'),
     # ('', non_laboratorial['patient_addmited_to_regular_ward'], 'Patient addmited to regular ward'),
     # ('', non_laboratorial['patient_addmited_to_semi_intensive_unit'], 'Patient addmited to semi-intensive unit'),
     # ('', non_laboratorial['patient_addmited_to_intensive_care_unit'], 'Patient addmited to intensive care unit'),
@@ -38,12 +39,14 @@ for label, serie, title in what_analyse:
     print('+' * 20)
 
     print('\t\tParameterized RandomForest')
+
     model = random_forest(RF_TREES, RF_CRITERION, RF_MAX_DEPTH, RF_MAX_FEATURES)
     print('\tModel Configuration:')
     print('\t', model)
 
     model.fit(train, train_labels)
 
+    # print(features, end=';')
     stats_report(model, train, test, train_labels, test_labels, 1)
 
     print('\n' * 2)

@@ -237,8 +237,8 @@ def drop_negative_excess_covid(data_frame):
 
     data_frame = data_frame.drop(index=negative_filled.loc[negative_filled.values == False].index)
 
-    print(f'covid result counts: ({min_positive_filled})')
-    print(data_frame['has_covid_19'].value_counts())
+    # print(f'covid result counts: ({min_positive_filled})')
+    # print(data_frame['has_covid_19'].value_counts())
     #input()
 
     return data_frame
@@ -269,8 +269,8 @@ def drop_excess_data(data_frame, serie):
         data_frame = data_frame.drop(index=c_filled)
         serie = serie.drop(index=c_filled)
 
-    print(f'after drop counts: ({min_filled})')
-    print(data_frame['temporary'].value_counts())
+    # print(f'after drop counts: ({min_filled})')
+    # print(data_frame['temporary'].value_counts())
     # input()
 
     data_frame.pop('temporary')

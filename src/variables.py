@@ -9,15 +9,15 @@ TEST_SET_PERC = 1/3
 
 
 '''The number of trees in the forest.'''
-RF_TREES = 200
+RF_TREES = 150
 
 '''The function to measure the quality of a split. Supported criteria are 'gini'
     for the Gini impurity and 'entropy' for the information gain.'''
-RF_CRITERION = 'entropy'
+RF_CRITERION = 'gini'
 
 '''The maximum depth of the tree. If None, then nodes are expanded until all leaves
     are pure or until all leaves contain less than min_samples_split samples.'''
-RF_MAX_DEPTH = 9  # None
+RF_MAX_DEPTH = 9
 
 '''The number of features to consider when looking for the best split:
     - If int, then consider max_features features at each split.
@@ -26,7 +26,7 @@ RF_MAX_DEPTH = 9  # None
     - If 'sqrt', then max_features=sqrt(n_features) (same as 'auto').
     - If 'log2', then max_features=log2(n_features).
     - If None, then max_features=n_features.'''
-RF_MAX_FEATURES = 'auto'
+RF_MAX_FEATURES = 'sqrt'
 
 
-RANDOM_SEED = 42
+RANDOM_SEED = None

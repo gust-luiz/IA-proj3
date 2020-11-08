@@ -1,0 +1,434 @@
+++++++++++++++++++++
+Testing: COVID-19
+++++++++++++++++++++
+Data shape (1798, 47)
+        Model Configuration:
+         RandomForestClassifier(max_depth=9, max_features='sqrt', n_estimators=150,
+                       n_jobs=-1)
+**************************************************
+Forest Dimension:
+        Average number of nodes 65
+        Average maximum depth 9
+
+Performance Comparison:
+        Train ROC AUC Score: 0.84651
+        Test ROC AUC Score: 0.82161
+
+Feature importances:
+                        feature  importance
+19        rhinovirusenterovirus    0.284881
+7                    leukocytes    0.083106
+27              inf_a_h1n1_2009    0.080470
+2                     platelets    0.055325
+10                  eosinophils    0.049195
+16                  influenza_b    0.043354
+14  respiratory_syncytial_virus    0.042534
+12                    monocytes    0.039645
+3          mean_platelet_volume    0.033719
+0                    hematocrit    0.032238
+
+Model Evaluation
+                 Recall
+                         Baseline: 1.0
+                         Test: 0.07
+                         Train: 0.15
+                 Precision
+                         Baseline: 0.31
+                         Test: 0.81
+                         Train: 1.0
+                 F1-score
+                         Baseline: 0.47
+                         Test: 0.13
+                         Train: 0.26
+                 Roc
+                         Baseline: 0.5
+                         Test: 0.82
+                         Train: 0.85
+Confusion matrix, without normalization:
+[[411   3]
+ [173  13]]
+
+Mean accuracy score:
+0.707
+**************************************************
+
+
+
+Automatically searched Best Model
+        Best params:
+                 {'n_estimators': 122, 'min_samples_split': 2, 'max_leaf_nodes': 20, 'max_features': None, 'max_depth': 18, 'criterion': 'gini', 'bootstrap': True}
+**************************************************
+Forest Dimension:
+        Average number of nodes 39
+        Average maximum depth 15
+
+Performance Comparison:
+        Train ROC AUC Score: 0.83671
+        Test ROC AUC Score: 0.82429
+
+Feature importances:
+                        feature  importance
+19        rhinovirusenterovirus    0.305003
+27              inf_a_h1n1_2009    0.107420
+7                    leukocytes    0.095490
+16                  influenza_b    0.069555
+2                     platelets    0.055447
+14  respiratory_syncytial_virus    0.050564
+10                  eosinophils    0.038858
+18              coronavirusnl63    0.038758
+12                    monocytes    0.027436
+5                   lymphocytes    0.019687
+
+Model Evaluation
+                 Recall
+                         Baseline: 1.0
+                         Test: 0.94
+                         Train: 0.96
+                 Precision
+                         Baseline: 0.31
+                         Test: 0.55
+                         Train: 0.56
+                 F1-score
+                         Baseline: 0.47
+                         Test: 0.69
+                         Train: 0.71
+                 Roc
+                         Baseline: 0.5
+                         Test: 0.82
+                         Train: 0.84
+Confusion matrix, without normalization:
+[[269 145]
+ [ 11 175]]
+
+Mean accuracy score:
+0.74
+**************************************************
+
+
+		Parameterized RandomForest
+	Model Configuration:
+	 RandomForestClassifier(criterion='entropy', max_depth=9, n_estimators=200,
+                       n_jobs=-1)
+**************************************************
+Forest Dimension:
+	Average number of nodes 75
+	Average maximum depth 9
+
+Performance Comparison:
+	Train ROC AUC Score: 0.64709
+	Test ROC AUC Score: 0.60542
+
+Feature importances:
+                    feature  importance
+7                leukocytes    0.155640
+2                 platelets    0.104349
+10              eosinophils    0.097926
+12                monocytes    0.063557
+4           red_blood_cells    0.060288
+19    rhinovirusenterovirus    0.058726
+5               lymphocytes    0.053226
+3      mean_platelet_volume    0.050288
+11  mean_corpuscular_volume    0.047267
+0                hematocrit    0.045152
+
+Model Evaluation
+		 Recall
+			 Baseline: 1.0
+			 Test: 0.03
+			 Train: 0.14
+		 Precision
+			 Baseline: 0.1
+			 Test: 0.62
+			 Train: 1.0
+		 F1-score
+			 Baseline: 0.18
+			 Test: 0.05
+			 Train: 0.25
+		 Roc
+			 Baseline: 0.5
+			 Test: 0.61
+			 Train: 0.65
+Confusion matrix, without normalization:
+[[1693    3]
+ [ 181    5]]
+
+Mean accuracy score:
+0.902
+**************************************************
+
+
+
+Automatically searched Best Model
+	Best params:
+		 {'n_estimators': 168, 'min_samples_split': 2, 'max_leaf_nodes': 28, 'max_features': 0.5, 'max_depth': 19, 'bootstrap': True}
+**************************************************
+Forest Dimension:
+	Average number of nodes 55
+	Average maximum depth 10
+
+Performance Comparison:
+	Train ROC AUC Score: 0.64734
+	Test ROC AUC Score: 0.59467
+
+Feature importances:
+                                      feature  importance
+7                                  leukocytes    0.243896
+2                                   platelets    0.096923
+10                                eosinophils    0.085857
+12                                  monocytes    0.064886
+4                             red_blood_cells    0.063806
+5                                 lymphocytes    0.062124
+0                                  hematocrit    0.053937
+3                        mean_platelet_volume    0.045828
+1                                  hemoglobin    0.036860
+6   mean_corpuscular_hemoglobin_concentration    0.035146
+
+Model Evaluation
+		 Recall
+			 Baseline: 1.0
+			 Test: 0.05
+			 Train: 0.15
+		 Precision
+			 Baseline: 0.1
+			 Test: 0.59
+			 Train: 1.0
+		 F1-score
+			 Baseline: 0.18
+			 Test: 0.1
+			 Train: 0.27
+		 Roc
+			 Baseline: 0.5
+			 Test: 0.59
+			 Train: 0.65
+Confusion matrix, without normalization:
+[[1689    7]
+ [ 176   10]]
+
+Mean accuracy score:
+0.903
+**************************************************
+
+covid result counts: (14 columns)
+1    558
+0    314
+Name: has_covid_19, dtype: int64
+
+(872, 47)
+++++++++++++++++++++
+Testing: COVID-19
+++++++++++++++++++++
+		Parameterized RandomForest
+	Model Configuration:
+	 RandomForestClassifier(criterion='entropy', max_depth=9, n_estimators=200,
+                       n_jobs=-1)
+**************************************************
+Forest Dimension:
+	Average number of nodes 69
+	Average maximum depth 8
+
+Performance Comparison:
+	Train ROC AUC Score: 1.0
+	Test ROC AUC Score: 0.98792
+
+Feature importances:
+                                      feature  importance
+7                                  leukocytes    0.123562
+10                                eosinophils    0.093880
+0                                  hematocrit    0.079497
+12                                  monocytes    0.075688
+1                                  hemoglobin    0.070134
+6   mean_corpuscular_hemoglobin_concentration    0.070007
+11                    mean_corpuscular_volume    0.067988
+2                                   platelets    0.066109
+4                             red_blood_cells    0.064402
+5                                 lymphocytes    0.057728
+
+Model Evaluation
+		 Recall
+			 Baseline: 1.0
+			 Test: 0.94
+			 Train: 1.0
+		 Precision
+			 Baseline: 0.64
+			 Test: 0.98
+			 Train: 1.0
+		 F1-score
+			 Baseline: 0.78
+			 Test: 0.96
+			 Train: 1.0
+		 Roc
+			 Baseline: 0.5
+			 Test: 0.99
+			 Train: 1.0
+Confusion matrix, without normalization:
+[[102   3]
+ [ 12 174]]
+
+Mean accuracy score:
+0.948
+**************************************************
+
+
+
+Automatically searched Best Model
+	Best params:
+		 {'n_estimators': 188, 'min_samples_split': 5, 'max_leaf_nodes': 48, 'max_features': 'sqrt', 'max_depth': 9, 'bootstrap': False}
+**************************************************
+Forest Dimension:
+	Average number of nodes 82
+	Average maximum depth 8
+
+Performance Comparison:
+	Train ROC AUC Score: 1.0
+	Test ROC AUC Score: 0.98797
+
+Feature importances:
+                                      feature  importance
+7                                  leukocytes    0.136043
+0                                  hematocrit    0.108241
+10                                eosinophils    0.100223
+12                                  monocytes    0.084021
+1                                  hemoglobin    0.076068
+6   mean_corpuscular_hemoglobin_concentration    0.063308
+2                                   platelets    0.063046
+4                             red_blood_cells    0.056483
+11                    mean_corpuscular_volume    0.054119
+3                        mean_platelet_volume    0.052005
+
+Model Evaluation
+		 Recall
+			 Baseline: 1.0
+			 Test: 0.94
+			 Train: 1.0
+		 Precision
+			 Baseline: 0.64
+			 Test: 0.98
+			 Train: 1.0
+		 F1-score
+			 Baseline: 0.78
+			 Test: 0.96
+			 Train: 1.0
+		 Roc
+			 Baseline: 0.5
+			 Test: 0.99
+			 Train: 1.0
+Confusion matrix, without normalization:
+[[102   3]
+ [ 12 174]]
+
+Mean accuracy score:
+0.948
+**************************************************
+
+
+covid result counts: (16.8 columns)
+0    1240
+1     558
+Name: has_covid_19, dtype: int64
+
+(1798, 47)
+++++++++++++++++++++
+Testing: COVID-19
+++++++++++++++++++++
+		Parameterized RandomForest
+	Model Configuration:
+	 RandomForestClassifier(criterion='entropy', max_depth=9, n_estimators=200,
+                       n_jobs=-1)
+**************************************************
+Forest Dimension:
+	Average number of nodes 54
+	Average maximum depth 9
+
+Performance Comparison:
+	Train ROC AUC Score: 0.83847
+	Test ROC AUC Score: 0.8375
+
+Feature importances:
+                        feature  importance
+19        rhinovirusenterovirus    0.265684
+7                    leukocytes    0.111439
+27              inf_a_h1n1_2009    0.094470
+10                  eosinophils    0.059850
+2                     platelets    0.057621
+16                  influenza_b    0.038469
+14  respiratory_syncytial_virus    0.038076
+3          mean_platelet_volume    0.033212
+5                   lymphocytes    0.029274
+0                    hematocrit    0.028668
+
+Model Evaluation
+		 Recall
+			 Baseline: 1.0
+			 Test: 0.07
+			 Train: 0.15
+		 Precision
+			 Baseline: 0.31
+			 Test: 1.0
+			 Train: 1.0
+		 F1-score
+			 Baseline: 0.47
+			 Test: 0.13
+			 Train: 0.27
+		 Roc
+			 Baseline: 0.5
+			 Test: 0.84
+			 Train: 0.84
+Confusion matrix, without normalization:
+[[414   0]
+ [173  13]]
+
+Mean accuracy score:
+0.712
+**************************************************
+
+
+
+Automatically searched Best Model
+	Best params:
+		 {'n_estimators': 87, 'min_samples_split': 10, 'max_leaf_nodes': 14, 'max_features': 0.8999999999999999, 'max_depth': 17, 'bootstrap': True}
+**************************************************
+Forest Dimension:
+	Average number of nodes 27
+	Average maximum depth 11
+
+Performance Comparison:
+	Train ROC AUC Score: 0.82469
+	Test ROC AUC Score: 0.83907
+
+Feature importances:
+                        feature  importance
+19        rhinovirusenterovirus    0.312027
+7                    leukocytes    0.116344
+27              inf_a_h1n1_2009    0.113733
+10                  eosinophils    0.065354
+16                  influenza_b    0.061783
+14  respiratory_syncytial_virus    0.058826
+2                     platelets    0.041563
+18              coronavirusnl63    0.033694
+5                   lymphocytes    0.031741
+12                    monocytes    0.028423
+
+Model Evaluation
+		 Recall
+			 Baseline: 1.0
+			 Test: 0.08
+			 Train: 0.13
+		 Precision
+			 Baseline: 0.31
+			 Test: 0.88
+			 Train: 0.96
+		 F1-score
+			 Baseline: 0.47
+			 Test: 0.15
+			 Train: 0.23
+		 Roc
+			 Baseline: 0.5
+			 Test: 0.84
+			 Train: 0.82
+Confusion matrix, without normalization:
+[[412   2]
+ [171  15]]
+
+Mean accuracy score:
+0.712
+**************************************************
