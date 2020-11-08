@@ -12,11 +12,11 @@ data_frame = create_went_home_column(data_frame)
 data_frame, non_laboratorial = remove_non_laboratorial(data_frame)
 
 what_analyse = [
-    # ('has_covid_19', None, 'COVID-19'),
+    ('has_covid_19', None, 'COVID-19'),
     # ('', non_laboratorial['patient_addmited_to_regular_ward'], 'Patient addmited to regular ward'),
     # ('', non_laboratorial['patient_addmited_to_semi_intensive_unit'], 'Patient addmited to semi-intensive unit'),
     # ('', non_laboratorial['patient_addmited_to_intensive_care_unit'], 'Patient addmited to intensive care unit'),
-    ('', non_laboratorial['patient_went_to_home'], 'Patient went to home'),
+    # ('', non_laboratorial['patient_went_to_home'], 'Patient went to home'),
 ]
 
 for label, serie, title in what_analyse:

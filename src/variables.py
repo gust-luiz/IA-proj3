@@ -17,7 +17,7 @@ RF_CRITERION = 'entropy'
 
 '''The maximum depth of the tree. If None, then nodes are expanded until all leaves
     are pure or until all leaves contain less than min_samples_split samples.'''
-RF_MAX_DEPTH = 9 #None
+RF_MAX_DEPTH = None
 
 '''The number of features to consider when looking for the best split:
     - If int, then consider max_features features at each split.

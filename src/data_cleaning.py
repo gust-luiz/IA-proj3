@@ -239,7 +239,7 @@ def drop_negative_excess_covid(data_frame):
 
     print(f'covid result counts: ({min_positive_filled})')
     print(data_frame['has_covid_19'].value_counts())
-    input()
+    #input()
 
     return data_frame
 

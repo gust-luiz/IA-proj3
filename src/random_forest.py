@@ -81,6 +81,7 @@ def best_random_forest():
     # Hyperparameter grid
     param_grid = {
         'n_estimators': linspace(10, 200).astype(int),
+        'criterion': ['entropy', 'gini'],
         'max_depth': [None] + list(linspace(3, 20).astype(int)),
         'max_features': ['auto', 'sqrt', None] + list(arange(0.5, 1, 0.1)),
         'max_leaf_nodes': [None] + list(linspace(10, 50, 500).astype(int)),
